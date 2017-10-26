@@ -1,0 +1,145 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Blocks">
+      <UniqueIdentifier>{BFDDE0F8-12F5-4F39-860B-8542A3B6EBD8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\OpenCV3">
+      <UniqueIdentifier>{ED23E832-8E43-482C-B571-C840C7B0E628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\OpenCV3\include">
+      <UniqueIdentifier>{D22CD6F9-866E-4074-91A7-515EAF56D653}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\vnm">
+      <UniqueIdentifier>{307A0E99-C720-4A7B-BD4C-FF15DE10174A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\vnm\src">
+      <UniqueIdentifier>{EF7B47C3-F47E-4BD3-9A60-7C67EBEA34AB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\vnm\include">
+      <UniqueIdentifier>{DD92FF61-7758-49B4-9EC7-E7E87E894914}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\OSC">
+      <UniqueIdentifier>{6D0509F3-B526-46E5-93E6-67C825B1DA6B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\OSC\src">
+      <UniqueIdentifier>{7A6F6466-2967-4BD9-BD20-20229FEC3147}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\OSC\src\cinder">
+      <UniqueIdentifier>{DEE34F27-788A-4AF6-A559-035936BA87F4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\OSC\src\cinder\osc">
+      <UniqueIdentifier>{DFC14EEB-393D-4098-AD49-B6878A1E727F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\TUIO">
+      <UniqueIdentifier>{A269C1C3-FBE0-41C1-BBEC-41F9FE6B02A7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\TUIO\src">
+      <UniqueIdentifier>{CE9B1619-16A4-4712-BF0E-BC2872115158}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\TUIO\src\cinder">
+      <UniqueIdentifier>{59E1FDA5-F3EF-4D88-B9C9-6F7233E7D30F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\TUIO\src\cinder\tuio">
+      <UniqueIdentifier>{AD5051A4-3466-480E-9854-27DE73AB89EB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\MiniAreaScanApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\include\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\item.def">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\src\MiniAreaScanApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-OpenCV3\include\CinderOpenCV.h">
+      <Filter>Blocks\OpenCV3\include</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Cinder\blocks\Cinder-VNM\src\AssetManager.cpp">
+      <Filter>Blocks\vnm\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Cinder\blocks\Cinder-VNM\src\MiniConfig.cpp">
+      <Filter>Blocks\vnm\src</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\AnsiToUtf.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\AssetManager.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\CaptureHelper.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\FontHelper.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\GlslParamsBuilder.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\GlslParamsBuilderImgui.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\MiniConfig.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\MiniConfigImgui.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\MotionHelper.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\NvOptimusEnablement.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\OscHelper.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\StateMachine.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\TextureHelper.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\TuioHelper.h">
+      <Filter>Blocks\vnm\include</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Cinder\blocks\OSC\src\cinder\osc\Osc.cpp">
+      <Filter>Blocks\OSC\src\cinder\osc</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Cinder\blocks\OSC\src\cinder\osc\Osc.h">
+      <Filter>Blocks\OSC\src\cinder\osc</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Cinder\blocks\TUIO\src\cinder\tuio\Tuio.cpp">
+      <Filter>Blocks\TUIO\src\cinder\tuio</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Cinder\blocks\TUIO\src\cinder\tuio\Tuio.h">
+      <Filter>Blocks\TUIO\src\cinder\tuio</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
