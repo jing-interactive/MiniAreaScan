@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -13,20 +14,21 @@
     <ProjectGuid>{190DB9EE-EA73-4552-8522-8F9F6F3327B3}</ProjectGuid>
     <RootNamespace>MiniAreaScan</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -42,10 +44,17 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <TargetName>$(ProjectName)-d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)..\bin\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;"..\..\Cinder\include";..\..\Cinder\blocks\Cinder-OpenCV3\include;..\..\Cinder\blocks\Cinder-VNM\include;..\..\Cinder\blocks;..\..\Cinder\blocks\OSC\src;..\..\Cinder\blocks\TUIO\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\rplidar\sdk\include;..\rplidar\sdk\src;..\include;"..\..\Cinder\include";..\..\Cinder\blocks\Cinder-OpenCV3\include;..\..\Cinder\blocks\Cinder-VNM\include;..\..\Cinder\blocks;..\..\Cinder\blocks\OSC\src;..\..\Cinder\blocks\TUIO\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -69,7 +78,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;"..\..\Cinder\include";..\..\Cinder\blocks\Cinder-OpenCV3\include;..\..\Cinder\blocks\Cinder-VNM\include;..\..\Cinder\blocks;..\..\Cinder\blocks\OSC\src;..\..\Cinder\blocks\TUIO\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\rplidar\sdk\include;..\rplidar\sdk\src;..\include;"..\..\Cinder\include";..\..\Cinder\blocks\Cinder-OpenCV3\include;..\..\Cinder\blocks\Cinder-VNM\include;..\..\Cinder\blocks;..\..\Cinder\blocks\OSC\src;..\..\Cinder\blocks\TUIO\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
@@ -120,8 +129,28 @@
     <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\TuioHelper.h" />
     <ClInclude Include="..\..\Cinder\blocks\OSC\src\cinder\osc\Osc.h" />
     <ClInclude Include="..\..\Cinder\blocks\TUIO\src\cinder\tuio\Tuio.h" />
+    <ClInclude Include="..\rplidar\sdk\include\rplidar.h" />
+    <ClInclude Include="..\rplidar\sdk\include\rplidar_cmd.h" />
+    <ClInclude Include="..\rplidar\sdk\include\rplidar_driver.h" />
+    <ClInclude Include="..\rplidar\sdk\include\rplidar_protocol.h" />
+    <ClInclude Include="..\rplidar\sdk\include\rptypes.h" />
+    <ClInclude Include="..\rplidar\sdk\src\arch\win32\arch_win32.h" />
+    <ClInclude Include="..\rplidar\sdk\src\arch\win32\net_serial.h" />
+    <ClInclude Include="..\rplidar\sdk\src\arch\win32\timer.h" />
+    <ClInclude Include="..\rplidar\sdk\src\arch\win32\winthread.hpp" />
+    <ClInclude Include="..\rplidar\sdk\src\hal\abs_rxtx.h" />
+    <ClInclude Include="..\rplidar\sdk\src\hal\event.h" />
+    <ClInclude Include="..\rplidar\sdk\src\hal\locker.h" />
+    <ClInclude Include="..\rplidar\sdk\src\hal\thread.h" />
+    <ClInclude Include="..\rplidar\sdk\src\hal\util.h" />
+    <ClInclude Include="..\rplidar\sdk\src\rplidar_driver_serial.h" />
+    <ClInclude Include="..\rplidar\sdk\src\sdkcommon.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\rplidar\sdk\src\arch\win32\net_serial.cpp" />
+    <ClCompile Include="..\rplidar\sdk\src\arch\win32\timer.cpp" />
+    <ClCompile Include="..\rplidar\sdk\src\hal\thread.cpp" />
+    <ClCompile Include="..\rplidar\sdk\src\rplidar_driver.cpp" />
     <ClCompile Include="..\src\MiniAreaScanApp.cpp" />
     <ClCompile Include="..\..\Cinder\blocks\Cinder-VNM\src\AssetManager.cpp" />
     <ClCompile Include="..\..\Cinder\blocks\Cinder-VNM\src\MiniConfig.cpp" />

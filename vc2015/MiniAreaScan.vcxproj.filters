@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -53,6 +54,9 @@
     </Filter>
     <Filter Include="Blocks\TUIO\src\cinder\tuio">
       <UniqueIdentifier>{AD5051A4-3466-480E-9854-27DE73AB89EB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\rplidar">
+      <UniqueIdentifier>{8613671f-b128-4d7a-a8ab-b3a4c22309ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -131,10 +135,70 @@
     <ClInclude Include="..\..\Cinder\blocks\TUIO\src\cinder\tuio\Tuio.h">
       <Filter>Blocks\TUIO\src\cinder\tuio</Filter>
     </ClInclude>
+    <ClCompile Include="..\rplidar\sdk\src\hal\thread.cpp">
+      <Filter>Blocks\rplidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\rplidar\sdk\src\rplidar_driver.cpp">
+      <Filter>Blocks\rplidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\rplidar\sdk\src\arch\win32\net_serial.cpp">
+      <Filter>Blocks\rplidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\rplidar\sdk\src\arch\win32\timer.cpp">
+      <Filter>Blocks\rplidar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\include\rplidar.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\include\rplidar_cmd.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\include\rplidar_driver.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\include\rplidar_protocol.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\include\rptypes.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\hal\abs_rxtx.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\hal\event.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\hal\locker.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\hal\thread.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\hal\util.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\rplidar_driver_serial.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\sdkcommon.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\arch\win32\arch_win32.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\arch\win32\net_serial.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\arch\win32\timer.h">
+      <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\rplidar\sdk\src\arch\win32\winthread.hpp">
+      <Filter>Blocks\rplidar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,10 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Log.h"
+#include "Cinder-VNM/include/OscHelper.h"
+#include "Cinder-VNM/include/TuioHelper.h"
+#include "Cinder-OpenCV3/include/CinderOpenCV.h"
+#include "rplidar.h"
 
 #include "AssetManager.h"
 #include "MiniConfig.h"
@@ -9,6 +13,17 @@
 using namespace ci;
 using namespace ci::app;
 using namespace std;
+using namespace rp::standalone::rplidar;
+
+struct RPlidarHelper
+{
+    bool setup(const string& serialPort)
+    {
+        return false;
+    }
+
+    RPlidarDriver* driver = nullptr;
+};
 
 class MiniAreaScanApp : public App
 {
