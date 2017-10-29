@@ -53,12 +53,12 @@ using namespace rp::standalone::rplidar;
 
 void print_usage(int argc, const char * argv[])
 {
-    printf("Simple LIDAR data grabber for RPLIDAR.\n"
-           "Version: "RPLIDAR_SDK_VERSION"\n"
-           "Usage:\n"
-           "%s <com port> [baudrate]\n"
-           "The default baudrate is 115200. Please refer to the datasheet for details.\n"
-           , argv[0]);
+    //printf("Simple LIDAR data grabber for RPLIDAR.\n"
+    //       "Version: "RPLIDAR_SDK_VERSION"\n"
+    //       "Usage:\n"
+    //       "%s <com port> [baudrate]\n"
+    //       "The default baudrate is 115200. Please refer to the datasheet for details.\n"
+    //       , argv[0]);
 }
 
 
@@ -188,13 +188,13 @@ int main(int argc, const char * argv[]) {
             printf("%02X", devinfo.serialnum[pos]);
         }
 
-        printf("\n"
-			    "Version: "RPLIDAR_SDK_VERSION"\n"
-                "Firmware Ver: %d.%02d\n"
-                "Hardware Rev: %d\n"
-                , devinfo.firmware_version>>8
-                , devinfo.firmware_version & 0xFF
-                , (int)devinfo.hardware_version);
+       // printf("\n"
+			    //"Version: "RPLIDAR_SDK_VERSION"\n"
+       //         "Firmware Ver: %d.%02d\n"
+       //         "Hardware Rev: %d\n"
+       //         , devinfo.firmware_version>>8
+       //         , devinfo.firmware_version & 0xFF
+       //         , (int)devinfo.hardware_version);
 
 
         // check the device health

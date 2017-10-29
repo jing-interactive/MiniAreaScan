@@ -2,9 +2,12 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Log.h"
+#include "cinder/params/Params.h"
+
 #include "Cinder-VNM/include/OscHelper.h"
 #include "Cinder-VNM/include/TuioHelper.h"
 #include "Cinder-OpenCV3/include/CinderOpenCV.h"
+
 #include "rplidar.h"
 
 #include "AssetManager.h"
@@ -15,14 +18,119 @@ using namespace ci::app;
 using namespace std;
 using namespace rp::standalone::rplidar;
 
+void info_(const string& err)
+{
+    CI_LOG_I(err);
+    _STATUS = err;
+}
+
 struct RPlidarHelper
 {
     bool setup(const string& serialPort)
     {
-        return false;
+        // create the driver instance
+        if (drv == nullptr) {
+            drv = RPlidarDriver::CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT);
+            if (!drv) {
+                info_("insufficent memory, exit");
+                return false;
+            }
+
+
+        }
+
+        // make connection...
+        if (IS_FAIL(drv->connect(serialPort.c_str(), 115200))) {
+            info_("cannot bind to the specified serial port");
+            return false;
+        }
+
+        info_("Connected to RPLidar");
+
+        rplidar_response_device_info_t devinfo;
+
+        // retrieving the device info
+        ////////////////////////////////////////
+        if (IS_FAIL(drv->getDeviceInfo(devinfo))) {
+            info_("getDeviceInfo() fails");
+            return false;
+        }
+
+        CI_LOG_I("Firmware Ver: " << (devinfo.firmware_version >> 8) << '.' << (devinfo.firmware_version & 0xFF));
+        CI_LOG_I("Hardware Rev: " << (int)devinfo.hardware_version);
+
+        // check health...
+        if (!checkRPLIDARHealth(drv)) {
+            info_("checkRPLIDARHealth() fails");
+            return false;
+        }
+
+        if (IS_FAIL(drv->startMotor())) {
+            info_("startMotor() fails");
+        }
+
+        if (IS_FAIL(drv->startScan())) {
+            info_("startScan() fails");
+        }
+
+        return true;
     }
 
-    RPlidarDriver* driver = nullptr;
+    ~RPlidarHelper()
+    {
+        if (drv) {
+            drv->stop();
+            drv->stopMotor();
+            RPlidarDriver::DisposeDriver(drv);
+        }
+    }
+
+    bool checkRPLIDARHealth(RPlidarDriver * drv)
+    {
+        u_result     op_result;
+        rplidar_response_device_health_t healthinfo;
+
+        op_result = drv->getHealth(healthinfo);
+        if (IS_OK(op_result)) { // the macro IS_OK is the preperred way to judge whether the operation is succeed.
+            printf("RPLidar health status : %d\n", healthinfo.status);
+            if (healthinfo.status == RPLIDAR_STATUS_ERROR) {
+                fprintf(stderr, "Error, rplidar internal error detected. Please reboot the device to retry.\n");
+                // enable the following code if you want rplidar to be reboot by software
+                // drv->reset();
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            fprintf(stderr, "Error, cannot retrieve the lidar health code: %x\n", op_result);
+            return false;
+        }
+    }
+
+    void update()
+    {
+        if (IS_FAIL(drv->grabScanData(nodes, count))) {
+            info_("grabScanData() fails");
+            return;
+        }
+
+        if (IS_FAIL(drv->ascendScanData(nodes, count))) {
+            info_("ascendScanData() fails");
+            return;
+        }
+
+        for (int pos = 0; pos < (int)count; ++pos) {
+            positions[pos].x = (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f;
+            positions[pos].y = nodes[pos].distance_q2 / 4.0f;
+        }
+    }
+
+    RPlidarDriver* drv = nullptr;
+    rplidar_response_measurement_node_t nodes[360 * 2];
+    vec2 positions[360 * 2];
+    size_t count = _countof(nodes);
 };
 
 class MiniAreaScanApp : public App
@@ -31,7 +139,13 @@ class MiniAreaScanApp : public App
     void setup() override
     {
         log::makeLogger<log::LoggerFile>();
-        createConfigUI({200, 200});
+        auto params = createConfigUI({300, 300});
+
+        mLidar.setup(LIDAR_PORT);
+
+        params->addButton("ReConnect", [&] {
+            mLidar.setup(LIDAR_PORT);
+        });
     
         getWindow()->getSignalKeyUp().connect([&](KeyEvent& event) {
             if (event.getCode() == KeyEvent::KEY_ESCAPE) quit();
@@ -40,9 +154,15 @@ class MiniAreaScanApp : public App
         getWindow()->getSignalDraw().connect([&] {
             gl::clear();
         });
+
+        getSignalUpdate().connect([&] {
+            mLidar.update();
+        });
     }
     
 private:
+    RPlidarHelper mLidar;
+
 };
 
 CINDER_APP( MiniAreaScanApp, RendererGl, [](App::Settings* settings) {

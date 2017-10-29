@@ -86,8 +86,8 @@ int main(int argc, const char * argv[]) {
     _u32         opt_com_baudrate = 115200;
     u_result     op_result;
 
-    printf("Ultra simple LIDAR data grabber for RPLIDAR.\n"
-           "Version: "RPLIDAR_SDK_VERSION"\n");
+    //printf("Ultra simple LIDAR data grabber for RPLIDAR.\n"
+    //       "Version: "RPLIDAR_SDK_VERSION"\n");
 
     // read serial port from the command line...
     if (argc>1) opt_com_path = argv[1]; // or set to a fixed value: e.g. "com3" 
@@ -144,8 +144,6 @@ int main(int argc, const char * argv[]) {
             , devinfo.firmware_version>>8
             , devinfo.firmware_version & 0xFF
             , (int)devinfo.hardware_version);
-
-
 
     // check health...
     if (!checkRPLIDARHealth(drv)) {
