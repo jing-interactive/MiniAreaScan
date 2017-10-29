@@ -111,26 +111,26 @@ struct RPlidarHelper
 
     void update()
     {
-        if (IS_FAIL(drv->grabScanData(nodes, count))) {
+        if (IS_FAIL(drv->grabScanData(nodes, scanCount))) {
             info_("grabScanData() fails");
             return;
         }
 
-        if (IS_FAIL(drv->ascendScanData(nodes, count))) {
+        if (IS_FAIL(drv->ascendScanData(nodes, scanCount))) {
             info_("ascendScanData() fails");
             return;
         }
 
-        for (int pos = 0; pos < (int)count; ++pos) {
-            positions[pos].x = (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f;
-            positions[pos].y = nodes[pos].distance_q2 / 4.0f;
+        for (int pos = 0; pos < scanCount; ++pos) {
+            scanData[pos].x = (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f;
+            scanData[pos].y = nodes[pos].distance_q2 / 4.0f;
         }
     }
 
     RPlidarDriver* drv = nullptr;
     rplidar_response_measurement_node_t nodes[360 * 2];
-    vec2 positions[360 * 2];
-    size_t count = _countof(nodes);
+    vec2 scanData[360 * 2];
+    size_t scanCount = _countof(nodes);
 };
 
 class MiniAreaScanApp : public App
@@ -153,6 +153,23 @@ class MiniAreaScanApp : public App
         
         getWindow()->getSignalDraw().connect([&] {
             gl::clear();
+            gl::setMatricesWindow(getWindowSize());
+            float distScale = 0.1;
+
+            auto centerPt = getWindowCenter();
+            gl::drawSolidCircle(centerPt, 3);
+
+            for (int pos = 0; pos < mLidar.scanCount; pos++) {
+                float distPixel = mLidar.scanData[pos].y*distScale;
+                float rad = (float)(mLidar.scanData[pos].x*3.1415 / 180.0);
+                float endptX = sin(rad)*(distPixel)+centerPt.x;
+                float endptY = centerPt.y - cos(rad)*(distPixel);
+
+                //int brightness = (_scan_data[pos].quality << 1) + 128;
+                //if (brightness>255) brightness = 255;
+
+                gl::drawSolidCircle({ endptX, endptY }, 1);
+            }
         });
 
         getSignalUpdate().connect([&] {
