@@ -35,13 +35,13 @@ struct RPlidarHelper
                 info_("insufficent memory, exit");
                 return false;
             }
-
-
         }
+
+        drv->disconnect();
 
         // make connection...
         if (IS_FAIL(drv->connect(serialPort.c_str(), 115200))) {
-            info_("cannot bind to the specified serial port");
+            info_("Fail to connect LIDAR");
             return false;
         }
 
@@ -111,6 +111,8 @@ struct RPlidarHelper
 
     void update()
     {
+        if (!drv->isConnected()) return;
+
         if (IS_FAIL(drv->grabScanData(nodes, scanCount))) {
             info_("grabScanData() fails");
             return;
