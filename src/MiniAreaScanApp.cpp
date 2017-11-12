@@ -13,6 +13,8 @@
 #include "AssetManager.h"
 #include "MiniConfig.h"
 
+#include "BlobTracker.h"
+
 using namespace ci;
 using namespace ci::app;
 using namespace std;
@@ -23,6 +25,78 @@ void info_(const string& err)
     CI_LOG_I(err);
     _STATUS = err;
 }
+
+bool fx = true;
+bool fy = true;//true->上方 , false->下方
+//the unit of x and y is mm
+//float toPixelX(float x)
+//{
+//    if (fx)
+//        return x*APP_WIDTH / scanWidth + APP_WIDTH / 2;
+//    else
+//        return -x*APP_WIDTH / scanWidth + APP_WIDTH / 2;
+//}
+//
+//float toPixelY(float y)
+//{
+//    if (fy)
+//        return y*APP_HEIGHT / scanHeight;
+//    else
+//        return APP_HEIGHT - y*APP_HEIGHT / scanHeight;
+//}
+
+#if 0
+void sendTuioMessage(osc::SenderUdp &sender, const BlobTracker &blobTracker)
+{
+    osc::Bundle bundle;
+
+    osc::Message alive;
+    {
+        alive.setAddress("/tuio/2Dcur");
+        alive.append("alive");
+    }
+
+    osc::Message fseq;
+    {
+        fseq.setAddress("/tuio/2Dcur");
+        fseq.append("fseq");
+        fseq.append((int32_t)getElapsedFrames());
+    }
+
+    SERVER_COUNT = math<int>::max(1, SERVER_COUNT);
+    SERVER_ID = math<int>::clamp(SERVER_ID, 0, SERVER_COUNT - 1);
+    float newRegion = 1 / (float)SERVER_COUNT;
+    for (const auto &blob : blobTracker.trackedBlobs)
+    {
+        //Point2f center(blob.center.x + depthOrigin.x, blob.center.y + depthOrigin.y);
+        vec2 center(blob.center.x, blob.center.y);
+
+        if (!mInputRoi.contains(center)) continue;
+
+        int blobId = blob.id;
+        osc::Message set;
+        set.setAddress("/tuio/2Dcur");
+        set.append("set");
+        set.append(blobId);             // id
+        float mappedX = lmap(center.x / mDepthW, INPUT_X1, INPUT_X2, OUTPUT_X1, OUTPUT_X2);
+        mappedX = (SERVER_ID + mappedX) * newRegion;
+        float mappedY = lmap(center.y / mDepthH, INPUT_Y1, INPUT_Y2, OUTPUT_Y1, OUTPUT_Y2);
+        set.append(mappedX);
+        set.append(mappedY);
+        set.append(blob.velocity.x / mOutputMap.getWidth());
+        set.append(blob.velocity.y / mOutputMap.getHeight());
+        set.append(0.0f);     // m
+        bundle.append(set);                         // add message to bundle
+
+        alive.append(blobId);               // add blob to list of ALL active IDs
+    }
+
+    bundle.append(alive);    //add message to bundle
+    bundle.append(fseq);     //add message to bundle
+
+    sender.send(bundle); //send bundle
+}
+#endif
 
 struct RPlidarHelper
 {
@@ -143,6 +217,8 @@ class MiniAreaScanApp : public App
         log::makeLogger<log::LoggerFile>();
         auto params = createConfigUI({300, 300});
 
+        current = cv::Mat_<cv::Vec3b>(APP_HEIGHT, APP_WIDTH);
+
         mLidar.setup(LIDAR_PORT);
 
         params->addButton("ReConnect", [&] {
@@ -156,22 +232,26 @@ class MiniAreaScanApp : public App
         getWindow()->getSignalDraw().connect([&] {
             gl::clear();
             gl::setMatricesWindow(getWindowSize());
-            float distScale = 0.1;
-
             auto centerPt = getWindowCenter();
             gl::drawSolidCircle(centerPt, 3);
 
+            current = cv::Scalar(0);
+            vector<cv::Point> points(mLidar.scanCount);
             for (int pos = 0; pos < mLidar.scanCount; pos++) {
-                float distPixel = mLidar.scanData[pos].y*distScale;
+                float distPixel = mLidar.scanData[pos].y*MM_TO_PIXEL;
                 float rad = (float)(mLidar.scanData[pos].x*3.1415 / 180.0);
-                float endptX = sin(rad)*(distPixel)+centerPt.x;
-                float endptY = centerPt.y - cos(rad)*(distPixel);
+                points[pos].x = sin(rad)*(distPixel)+centerPt.x;
+                points[pos].y = centerPt.y - cos(rad)*(distPixel);
 
                 //int brightness = (_scan_data[pos].quality << 1) + 128;
                 //if (brightness>255) brightness = 255;
 
-                gl::drawSolidCircle({ endptX, endptY }, 1);
+                gl::drawSolidCircle({ points[pos].x, points[pos].y }, 1);
             }
+
+            const Point* pts = &points[0];
+            const int npts = points.size();
+            cv::fillPoly(current, &pts, &npts, 1, cv::Scalar(255));
         });
 
         getSignalUpdate().connect([&] {
@@ -181,7 +261,9 @@ class MiniAreaScanApp : public App
     
 private:
     RPlidarHelper mLidar;
+    BlobTracker tracker;
 
+    cv::Mat current;
 };
 
 CINDER_APP( MiniAreaScanApp, RendererGl, [](App::Settings* settings) {

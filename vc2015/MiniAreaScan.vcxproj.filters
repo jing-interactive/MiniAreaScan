@@ -147,6 +147,9 @@
     <ClCompile Include="..\rplidar\sdk\src\arch\win32\timer.cpp">
       <Filter>Blocks\rplidar</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\BlobTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -199,6 +202,12 @@
     </ClInclude>
     <ClInclude Include="..\rplidar\sdk\src\arch\win32\winthread.hpp">
       <Filter>Blocks\rplidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\BlobTracker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\point2d.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

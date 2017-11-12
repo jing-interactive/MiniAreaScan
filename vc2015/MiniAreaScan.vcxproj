@@ -145,12 +145,15 @@
     <ClInclude Include="..\rplidar\sdk\src\hal\util.h" />
     <ClInclude Include="..\rplidar\sdk\src\rplidar_driver_serial.h" />
     <ClInclude Include="..\rplidar\sdk\src\sdkcommon.h" />
+    <ClInclude Include="..\src\BlobTracker.h" />
+    <ClInclude Include="..\src\point2d.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\rplidar\sdk\src\arch\win32\net_serial.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\arch\win32\timer.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\hal\thread.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\rplidar_driver.cpp" />
+    <ClCompile Include="..\src\BlobTracker.cpp" />
     <ClCompile Include="..\src\MiniAreaScanApp.cpp" />
     <ClCompile Include="..\..\Cinder\blocks\Cinder-VNM\src\AssetManager.cpp" />
     <ClCompile Include="..\..\Cinder\blocks\Cinder-VNM\src\MiniConfig.cpp" />
