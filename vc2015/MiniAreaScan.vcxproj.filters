@@ -209,6 +209,9 @@
     <ClInclude Include="..\src\point2d.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\RplidarHelper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc">

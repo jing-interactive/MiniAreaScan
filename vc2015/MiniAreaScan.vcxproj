@@ -129,6 +129,7 @@
     <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\TuioHelper.h" />
     <ClInclude Include="..\..\Cinder\blocks\OSC\src\cinder\osc\Osc.h" />
     <ClInclude Include="..\..\Cinder\blocks\TUIO\src\cinder\tuio\Tuio.h" />
+    <ClInclude Include="..\include\RplidarHelper.h" />
     <ClInclude Include="..\rplidar\sdk\include\rplidar.h" />
     <ClInclude Include="..\rplidar\sdk\include\rplidar_cmd.h" />
     <ClInclude Include="..\rplidar\sdk\include\rplidar_driver.h" />
