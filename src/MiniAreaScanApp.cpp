@@ -48,13 +48,6 @@ public:
             });
         }
 
-        if (!mDevice.checkRPLIDARHealth())
-        {
-            CI_LOG_E("Invalid sensor for " << LIDAR_PORT);
-            //quit();
-            //return;
-        }
-
         mOscSender = std::make_shared<osc::SenderUdp>(10000, _ADDRESS, _TUIO_PORT);
         mOscSender->bind();
 
@@ -63,17 +56,15 @@ public:
         mLogo = am::texture2d("logo.png");
         mShader = am::glslProg("texture");
 
-        mForeMat = cv::Mat1b(APP_HEIGHT, APP_WIDTH);
-        mBackMat = cv::Mat1b(APP_HEIGHT, APP_WIDTH);
+        mFrontMat = cv::Mat1b(APP_HEIGHT, APP_WIDTH);
         mDiffMat = cv::Mat1b(APP_HEIGHT, APP_WIDTH);
 
 #if 0
-        mForeSurface = Surface(mForeMat.ptr(), APP_WIDTH, APP_HEIGHT, mForeMat.step, SurfaceChannelOrder::RGB);
+        mFrontSurface = Surface(mFrontMat.ptr(), APP_WIDTH, APP_HEIGHT, mFrontMat.step, SurfaceChannelOrder::RGB);
         mBackSurface = Surface(mBackMat.ptr(), APP_WIDTH, APP_HEIGHT, mBackMat.step, SurfaceChannelOrder::RGB);
         mDiffSurface = Surface(mDiffMat.ptr(), APP_WIDTH, APP_HEIGHT, mDiffMat.step, SurfaceChannelOrder::RGB);
 #else
-        mForeSurface = Channel(APP_WIDTH, APP_HEIGHT, mForeMat.step, 1, mForeMat.ptr());
-        mBackSurface = Channel(APP_WIDTH, APP_HEIGHT, mBackMat.step, 1, mBackMat.ptr());
+        mFrontSurface = Channel(APP_WIDTH, APP_HEIGHT, mFrontMat.step, 1, mFrontMat.ptr());
         mDiffSurface = Channel(APP_WIDTH, APP_HEIGHT, mDiffMat.step, 1, mDiffMat.ptr());
 #endif
 
@@ -166,7 +157,7 @@ public:
 
         mDevice.update();
         auto centerPt = getWindowCenter();
-        mForeMat.setTo(cv::Scalar(0));
+        mFrontMat.setTo(cv::Scalar(0));
         vector<cv::Point> points(mDevice.scanCount);
         for (int pos = 0; pos < mDevice.scanCount; pos++) {
             float distPixel = mDevice.scanData[pos].y*MM_TO_PIXEL;
@@ -184,8 +175,8 @@ public:
         {
             const Point* pts = &points[0];
             const int npts = points.size();
-            cv::fillPoly(mForeMat, &pts, &npts, 1, cv::Scalar(255));
-            updateTexture(mForeTexture, mForeSurface);
+            cv::fillPoly(mFrontMat, &pts, &npts, 1, cv::Scalar(255));
+            updateTexture(mFrontTexture, mFrontSurface);
         }
 
         updateDepthRelated();
@@ -195,14 +186,19 @@ private:
 
     void updateDepthRelated()
     {
-        updateTexture(mTexture, mForeSurface);
+        updateTexture(mTexture, mFrontSurface);
 
         if (!mBackTexture)
         {
             updateBack();
         }
+        if (mMM_TO_PIXEL != MM_TO_PIXEL)
+        {
+            mMM_TO_PIXEL = MM_TO_PIXEL;
+            updateBack();
+        }
 
-        mDiffMat = mBackMat - mForeMat;
+        mDiffMat = mBackMat - mFrontMat;
 
 #if 0
         int cx = CENTER_X * APP_WIDTH;
@@ -223,7 +219,7 @@ private:
             for (int xx = mInputRoi.x1; xx < mInputRoi.x2; xx++)
             {
                 int x = LEFT_RIGHT_FLIPPED ? (APP_WIDTH - xx) : xx;
-                auto dep = *mForeSurface.getData(x, y);
+                auto dep = *mFrontSurface.getData(x, y);
                 if (dep > 0)
                 {
                     auto bg = *mBackSurface.getData(x, y);
@@ -376,7 +372,8 @@ private:
 
     void updateBack()
     {
-        mBackSurface = mForeSurface.clone();
+        mBackMat = mFrontMat.clone();
+        mBackSurface = Channel(APP_WIDTH, APP_HEIGHT, mBackMat.step, 1, mBackMat.ptr());
         updateTexture(mBackTexture, mBackSurface);
     }
 
@@ -396,6 +393,7 @@ private:
 
     params::InterfaceGlRef mParams;
     std::shared_ptr<osc::SenderUdp> mOscSender;
+    float mMM_TO_PIXEL = -1;
 
     gl::TextureRef mTexture;
 
@@ -411,9 +409,9 @@ private:
 
     RPlidarHelper mDevice;
 
-    cv::Mat1b mForeMat, mBackMat, mDiffMat;
-    Channel mForeSurface, mBackSurface, mDiffSurface;
-    gl::TextureRef mForeTexture, mBackTexture, mDiffTexture;
+    cv::Mat1b mFrontMat, mBackMat, mDiffMat;
+    Channel mFrontSurface, mBackSurface, mDiffSurface;
+    gl::TextureRef mFrontTexture, mBackTexture, mDiffTexture;
 };
 
 void preSettings(App::Settings *settings)
