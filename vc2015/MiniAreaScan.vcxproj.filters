@@ -58,6 +58,9 @@
     <Filter Include="Blocks\rplidar">
       <UniqueIdentifier>{8613671f-b128-4d7a-a8ab-b3a4c22309ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Blocks\ydlidar">
+      <UniqueIdentifier>{01101e83-0e1d-4dc2-b506-308ab30e0f00}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\MiniAreaScanApp.cpp">
@@ -150,6 +153,21 @@
     <ClCompile Include="..\src\BlobTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\ydlidar\src\CYdLidar.cpp">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ydlidar\src\serial.cpp">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ydlidar\src\ydlidar_driver.cpp">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ydlidar\src\impl\windows\win_serial.cpp">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ydlidar\src\impl\windows\win_timer.cpp">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -210,6 +228,42 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\RplidarHelper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\include\CYdLidar.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\include\locker.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\include\serial.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\include\thread.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\include\timer.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\include\utils.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\include\v8stdint.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\include\ydlidar_driver.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\src\common.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\src\impl\windows\win.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ydlidar\src\impl\windows\win_serial.h">
+      <Filter>Blocks\ydlidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\YdlidarHelper.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

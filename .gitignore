@@ -1,4 +1,5 @@
 # Compiled Object files
+.vs
 *.slo
 *.lo
 *.o
@@ -52,3 +53,9 @@ xcuserdata/
 ## Other
 *.moved-aside
 *.xccheckout
+/SDK
+/ydlidar/vs2015
+/rplidar/obj
+/rplidar/output
+
+x64

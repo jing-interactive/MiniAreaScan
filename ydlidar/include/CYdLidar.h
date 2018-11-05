@@ -16,7 +16,7 @@
         return m_##name;\
 }\
 
-#define DEG2RAD(x) ((x)*M_PI/180.)
+#define DEG2RAD(x) ((x)*3.141592653/180.)
 
 class YDLIDAR_API CYdLidar
 {

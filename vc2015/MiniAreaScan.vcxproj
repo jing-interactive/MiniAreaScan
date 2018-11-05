@@ -54,8 +54,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\rplidar\sdk\include;..\rplidar\sdk\src;..\include;"..\..\Cinder\include";..\..\Cinder\blocks\Cinder-OpenCV3\include;..\..\Cinder\blocks\Cinder-VNM\include;..\..\Cinder\blocks;..\..\Cinder\blocks\OSC\src;..\..\Cinder\blocks\TUIO\src</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\rplidar\sdk\include;..\rplidar\sdk\src;..\ydlidar\include;..\include;..\..\Cinder\include;..\..\Cinder\blocks\Cinder-OpenCV3\include;..\..\Cinder\blocks\Cinder-VNM\include;..\..\Cinder\blocks;..\..\Cinder\blocks\OSC\src;..\..\Cinder\blocks\TUIO\src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ydlidarStatic_EXPORTS;WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader />
@@ -78,8 +78,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\rplidar\sdk\include;..\rplidar\sdk\src;..\include;"..\..\Cinder\include";..\..\Cinder\blocks\Cinder-OpenCV3\include;..\..\Cinder\blocks\Cinder-VNM\include;..\..\Cinder\blocks;..\..\Cinder\blocks\OSC\src;..\..\Cinder\blocks\TUIO\src</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\rplidar\sdk\include;..\rplidar\sdk\src;..\ydlidar\include;..\include;..\..\Cinder\include;..\..\Cinder\blocks\Cinder-OpenCV3\include;..\..\Cinder\blocks\Cinder-VNM\include;..\..\Cinder\blocks;..\..\Cinder\blocks\OSC\src;..\..\Cinder\blocks\TUIO\src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ydlidarStatic_EXPORTS;WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
@@ -130,6 +130,7 @@
     <ClInclude Include="..\..\Cinder\blocks\OSC\src\cinder\osc\Osc.h" />
     <ClInclude Include="..\..\Cinder\blocks\TUIO\src\cinder\tuio\Tuio.h" />
     <ClInclude Include="..\include\RplidarHelper.h" />
+    <ClInclude Include="..\include\YdlidarHelper.h" />
     <ClInclude Include="..\rplidar\sdk\include\rplidar.h" />
     <ClInclude Include="..\rplidar\sdk\include\rplidar_cmd.h" />
     <ClInclude Include="..\rplidar\sdk\include\rplidar_driver.h" />
@@ -148,6 +149,17 @@
     <ClInclude Include="..\rplidar\sdk\src\sdkcommon.h" />
     <ClInclude Include="..\src\BlobTracker.h" />
     <ClInclude Include="..\src\point2d.h" />
+    <ClInclude Include="..\ydlidar\include\CYdLidar.h" />
+    <ClInclude Include="..\ydlidar\include\locker.h" />
+    <ClInclude Include="..\ydlidar\include\serial.h" />
+    <ClInclude Include="..\ydlidar\include\thread.h" />
+    <ClInclude Include="..\ydlidar\include\timer.h" />
+    <ClInclude Include="..\ydlidar\include\utils.h" />
+    <ClInclude Include="..\ydlidar\include\v8stdint.h" />
+    <ClInclude Include="..\ydlidar\include\ydlidar_driver.h" />
+    <ClInclude Include="..\ydlidar\src\common.h" />
+    <ClInclude Include="..\ydlidar\src\impl\windows\win.h" />
+    <ClInclude Include="..\ydlidar\src\impl\windows\win_serial.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\rplidar\sdk\src\arch\win32\net_serial.cpp" />
@@ -160,6 +172,11 @@
     <ClCompile Include="..\..\Cinder\blocks\Cinder-VNM\src\MiniConfig.cpp" />
     <ClCompile Include="..\..\Cinder\blocks\OSC\src\cinder\osc\Osc.cpp" />
     <ClCompile Include="..\..\Cinder\blocks\TUIO\src\cinder\tuio\Tuio.cpp" />
+    <ClCompile Include="..\ydlidar\src\CYdLidar.cpp" />
+    <ClCompile Include="..\ydlidar\src\impl\windows\win_serial.cpp" />
+    <ClCompile Include="..\ydlidar\src\impl\windows\win_timer.cpp" />
+    <ClCompile Include="..\ydlidar\src\serial.cpp" />
+    <ClCompile Include="..\ydlidar\src\ydlidar_driver.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

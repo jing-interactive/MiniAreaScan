@@ -9,7 +9,9 @@
 #include "cinder/osc/Osc.h"
 #include "CinderOpenCV.h"
 #include "BlobTracker.h"
+
 #include "RplidarHelper.h"
+#include "YdlidarHelper.h"
 
 #include "Cinder-VNM/include/AssetManager.h"
 #include "Cinder-VNM/include/MiniConfig.h"
