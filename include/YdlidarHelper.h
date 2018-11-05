@@ -35,7 +35,8 @@ struct LidarDevice
         drv->disconnect();
 
         // make connection...
-        if (IS_FAIL(drv->connect(serialPort.c_str(), 115200))) {
+        if (IS_FAIL(drv->connect(serialPort.c_str(), 230400)))
+        {
             info_("Fail to connect LIDAR");
             return false;
         }
@@ -113,6 +114,7 @@ struct LidarDevice
     {
         if (!drv->isconnected()) return;
 
+        scanCount = _countof(nodes);
         if (IS_FAIL(drv->grabScanData(nodes, scanCount))) {
             info_("grabScanData() fails");
             return;

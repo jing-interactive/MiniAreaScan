@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
     drv.initialize();
     while (!running) {
         bool hardError;
-        drvScan scan;
+        LaserScan scan;
 
         if (drv.doProcessSimple(scan, hardError)) {
             fprintf(stderr, "Scan received: %u ranges\n", (unsigned int)scan.ranges.size());
