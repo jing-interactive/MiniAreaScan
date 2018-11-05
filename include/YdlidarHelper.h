@@ -7,7 +7,7 @@ using namespace ydlidar;
 
 #ifndef IS_OK
 #define IS_OK(x)    ( (x) == RESULT_OK )
-#define IS_FAIL(x)  ( (x) != RESULT_OK )
+#define IS_FAIL(x)  ( (x) == RESULT_FAIL )
 #endif
 
 struct LidarDevice
