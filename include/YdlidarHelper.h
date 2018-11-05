@@ -5,7 +5,12 @@
 
 using namespace ydlidar;
 
-struct YdlidarHelper
+#ifndef IS_OK
+#define IS_OK(x)    ( (x) == RESULT_OK )
+#define IS_FAIL(x)  ( (x) != RESULT_OK )
+#endif
+
+struct LidarDevice
 {
     void info_(const std::string& err)
     {
@@ -66,7 +71,7 @@ struct YdlidarHelper
         return true;
     }
 
-    ~YdlidarHelper()
+    ~LidarDevice()
     {
         if (drv) {
             drv->stop();
@@ -77,7 +82,7 @@ struct YdlidarHelper
 
     bool checkLIDARHealth()
     {
-        u_result op_result;
+        result_t op_result;
         device_health healthinfo;
 
         op_result = drv->getHealth(healthinfo);

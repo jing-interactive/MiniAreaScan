@@ -10,8 +10,12 @@
 #include "CinderOpenCV.h"
 #include "BlobTracker.h"
 
-#include "RplidarHelper.h"
+#define YD_LIDAR
+#ifdef YD_LIDAR
 #include "YdlidarHelper.h"
+#else
+#include "RplidarHelper.h"
+#endif
 
 #include "Cinder-VNM/include/AssetManager.h"
 #include "Cinder-VNM/include/MiniConfig.h"
@@ -409,7 +413,7 @@ private:
 
     gl::GlslProgRef	mShader;
 
-    RPlidarHelper mDevice;
+    LidarDevice mDevice;
 
     cv::Mat1b mFrontMat, mBackMat, mDiffMat;
     Channel mFrontSurface, mBackSurface, mDiffSurface;

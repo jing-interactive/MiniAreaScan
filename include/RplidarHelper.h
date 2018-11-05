@@ -5,7 +5,7 @@
 
 using namespace rp::standalone::rplidar;
 
-struct RPlidarHelper
+struct LidarDevice
 {
     void info_(const std::string& err)
     {
@@ -65,7 +65,7 @@ struct RPlidarHelper
         return true;
     }
 
-    ~RPlidarHelper()
+    ~LidarDevice()
     {
         if (drv) {
             drv->stop();
