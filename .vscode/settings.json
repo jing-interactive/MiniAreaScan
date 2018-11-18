@@ -1,0 +1,9 @@
+{
+  "files.exclude": {
+    "bin": true,
+    "vs201*": true,
+    "SDK": true,
+    "x64": true
+  },
+  "editor.formatOnSave": true
+}

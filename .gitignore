@@ -59,3 +59,6 @@ xcuserdata/
 /rplidar/output
 
 x64
+/vc2015/MiniAreaScan.VC.VC.opendb
+/vc2015/MiniAreaScan.VC.db
+/vc2015/MiniConfig.xml
