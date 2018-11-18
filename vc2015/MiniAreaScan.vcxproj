@@ -167,6 +167,7 @@
     <ClCompile Include="..\LidarDevice\RpLidarDevice.cpp" />
     <ClCompile Include="..\LidarDevice\YdLidarDevice.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\arch\win32\net_serial.cpp" />
+    <ClCompile Include="..\rplidar\sdk\src\arch\win32\net_socket.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\arch\win32\timer.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\hal\thread.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\rplidar_driver.cpp" />

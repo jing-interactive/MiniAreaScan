@@ -11,7 +11,7 @@ bool RpLidarDevice::setup(const std::string &serialPort)
     // create the driver instance
     if (drv == nullptr)
     {
-        drv = RPlidarDriver::CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT);
+        drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
         if (!drv)
         {
             info_("insufficent memory, exit");
@@ -55,7 +55,7 @@ bool RpLidarDevice::setup(const std::string &serialPort)
         info_("startMotor() fails");
     }
 
-    if (IS_FAIL(drv->startScan()))
+    if (IS_FAIL(drv->startScan(true, true)))
     {
         info_("startScan() fails");
     }

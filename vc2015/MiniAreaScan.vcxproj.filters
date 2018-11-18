@@ -177,6 +177,9 @@
     <ClCompile Include="..\LidarDevice\YdLidarDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\rplidar\sdk\src\arch\win32\net_socket.cpp">
+      <Filter>Blocks\rplidar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
