@@ -2,6 +2,7 @@ GROUP_DEF(Remote)
 
 ITEM_DEF(int, APP_WIDTH, 1024)
 ITEM_DEF(int, APP_HEIGHT, 768)
+ITEM_DEF(bool, _RP_LIDAR, true)
 ITEM_DEF(string, LIDAR_PORT, "\\\\.\\com4")
 ITEM_DEF(string, _ADDRESS, "127.0.0.1")
 ITEM_DEF(int, _TUIO_PORT, 3333)

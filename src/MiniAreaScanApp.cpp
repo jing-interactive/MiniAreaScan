@@ -10,12 +10,8 @@
 #include "CinderOpenCV.h"
 #include "BlobTracker.h"
 
-#define YD_LIDAR
-#ifdef YD_LIDAR
-#include "YdlidarHelper.h"
-#else
-#include "RplidarHelper.h"
-#endif
+#include "../LidarDevice/RpLidarDevice.h"
+#include "../LidarDevice/YdLidarDevice.h"
 
 #include "Cinder-VNM/include/AssetManager.h"
 #include "Cinder-VNM/include/MiniConfig.h"
@@ -35,7 +31,15 @@ public:
         log::makeLogger<log::LoggerFile>();
         console() << "EXE built on " << __DATE__ << endl;
 
-        mDevice.setup(LIDAR_PORT);
+        if (_RP_LIDAR)
+        {
+            mDevice = make_unique<RpLidarDevice>();
+        }
+        else
+        {
+            mDevice = make_unique<YdLidarDevice>();
+        }
+        mDevice->setup(LIDAR_PORT);
 
         {
             mParams = createConfigUI({ 400, 600 });
@@ -50,7 +54,7 @@ public:
             });
 
             mParams->addButton("ReConnect", [&] {
-                mDevice.setup(LIDAR_PORT);
+                mDevice->setup(LIDAR_PORT);
             });
         }
 
@@ -144,7 +148,7 @@ public:
 
     void update() override
     {
-        _STATUS = mDevice.status;
+        _STATUS = mDevice->status;
 
         mFps = getAverageFps();
 
@@ -161,13 +165,13 @@ public:
             OUTPUT_Y2 * APP_HEIGHT
         );
 
-        mDevice.update();
+        mDevice->update();
         auto centerPt = getWindowCenter();
         mFrontMat.setTo(cv::Scalar(0));
-        vector<cv::Point> points(mDevice.scanCount);
-        for (int pos = 0; pos < mDevice.scanCount; pos++) {
-            float distPixel = mDevice.scanData[pos].y*MM_TO_PIXEL;
-            float rad = (float)(mDevice.scanData[pos].x*3.1415 / 180.0);
+        vector<cv::Point> points(mDevice->scanCount);
+        for (int pos = 0; pos < mDevice->scanCount; pos++) {
+            float distPixel = mDevice->scanData[pos].y*MM_TO_PIXEL;
+            float rad = (float)(mDevice->scanData[pos].x*3.1415 / 180.0);
             points[pos].x = sin(rad)*(distPixel)+centerPt.x;
             points[pos].y = centerPt.y - cos(rad)*(distPixel);
 
@@ -177,7 +181,7 @@ public:
             //gl::drawSolidCircle({ points[pos].x, points[pos].y }, 1);
         }
 
-        if (mDevice.scanCount > 0)
+        if (mDevice->scanCount > 0)
         {
             const Point* pts = &points[0];
             const int npts = points.size();
@@ -413,7 +417,7 @@ private:
 
     gl::GlslProgRef	mShader;
 
-    LidarDevice mDevice;
+    unique_ptr<LidarDevice> mDevice;
 
     cv::Mat1b mFrontMat, mBackMat, mDiffMat;
     Channel mFrontSurface, mBackSurface, mDiffSurface;

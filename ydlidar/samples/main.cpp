@@ -41,8 +41,8 @@ int main(int argc, char * argv[])
     const int baud = 115200;
     const int intensities = 0;
 
-    signal(SIGINT, Stop);
-    signal(SIGTERM, Stop);
+    //signal(SIGINT, Stop);
+    //signal(SIGTERM, Stop);
 
     drv.setSerialPort(port);
     drv.setSerialBaudrate(baud);

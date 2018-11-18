@@ -129,8 +129,9 @@
     <ClInclude Include="..\..\Cinder\blocks\Cinder-VNM\include\TuioHelper.h" />
     <ClInclude Include="..\..\Cinder\blocks\OSC\src\cinder\osc\Osc.h" />
     <ClInclude Include="..\..\Cinder\blocks\TUIO\src\cinder\tuio\Tuio.h" />
-    <ClInclude Include="..\include\RplidarHelper.h" />
-    <ClInclude Include="..\include\YdlidarHelper.h" />
+    <ClInclude Include="..\LidarDevice\LidarDevice.h" />
+    <ClInclude Include="..\LidarDevice\RpLidarDevice.h" />
+    <ClInclude Include="..\LidarDevice\YdLidarDevice.h" />
     <ClInclude Include="..\rplidar\sdk\include\rplidar.h" />
     <ClInclude Include="..\rplidar\sdk\include\rplidar_cmd.h" />
     <ClInclude Include="..\rplidar\sdk\include\rplidar_driver.h" />
@@ -162,6 +163,9 @@
     <ClInclude Include="..\ydlidar\src\impl\windows\win_serial.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\LidarDevice\LidarDevice.cpp" />
+    <ClCompile Include="..\LidarDevice\RpLidarDevice.cpp" />
+    <ClCompile Include="..\LidarDevice\YdLidarDevice.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\arch\win32\net_serial.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\arch\win32\timer.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\hal\thread.cpp" />

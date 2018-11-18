@@ -168,6 +168,15 @@
     <ClCompile Include="..\ydlidar\src\impl\windows\win_timer.cpp">
       <Filter>Blocks\ydlidar</Filter>
     </ClCompile>
+    <ClCompile Include="..\LidarDevice\LidarDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LidarDevice\RpLidarDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LidarDevice\YdLidarDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -227,9 +236,6 @@
     <ClInclude Include="..\src\point2d.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\RplidarHelper.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\ydlidar\include\CYdLidar.h">
       <Filter>Blocks\ydlidar</Filter>
     </ClInclude>
@@ -263,7 +269,13 @@
     <ClInclude Include="..\ydlidar\src\impl\windows\win_serial.h">
       <Filter>Blocks\ydlidar</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\YdlidarHelper.h">
+    <ClInclude Include="..\LidarDevice\LidarDevice.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LidarDevice\RpLidarDevice.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LidarDevice\YdLidarDevice.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
