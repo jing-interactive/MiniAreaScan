@@ -2,7 +2,7 @@
  *  RPLIDAR
  *  Win32 Demo Application
  *
- *  Copyright (c) 2016 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2016 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */

@@ -4,7 +4,7 @@
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
- *  Copyright (c) 2014 - 2016 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2014 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -35,128 +35,159 @@
 #include "scanView.h"
 #include "MainFrm.h"
 #include "FreqSetDlg.h"
-#include "drvlogic\lidarmgr.h"
 
 const int REFRESEH_TIMER = 0x800;
 
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 {
-	if(CFrameWindowImpl<CMainFrame>::PreTranslateMessage(pMsg))
-		return TRUE;
+    //intercept dynamic created menu item msg firstly
+    if(pMsg->wParam >= scanModeMenuRecBegin_ && pMsg->wParam < scanModeMenuRecBegin_ + modeVec_.size())
+    {
+        scanModeSelect(pMsg->wParam);
+    }
+    
+    if(CFrameWindowImpl<CMainFrame>::PreTranslateMessage(pMsg))
+        return TRUE;
     if (m_hWndClient == m_scanview.m_hWnd){
         return m_scanview.PreTranslateMessage(pMsg);
     } else {
         return FALSE;
     }
-	
 }
 
 BOOL CMainFrame::OnIdle()
 {
-	UIUpdateToolBar();
-	return FALSE;
+    UIUpdateToolBar();
+    return FALSE;
 }
 
 LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	// create command bar window
-	HWND hWndCmdBar = m_CmdBar.Create(m_hWnd, rcDefault, NULL, ATL_SIMPLE_CMDBAR_PANE_STYLE);
-	// attach menu
-	m_CmdBar.AttachMenu(GetMenu());
-	// load command bar images
-	m_CmdBar.LoadImages(IDR_MAINFRAME);
-	// remove old menu
-	SetMenu(NULL);
+    // create command bar window
+    HWND hWndCmdBar = m_CmdBar.Create(m_hWnd, rcDefault, NULL, ATL_SIMPLE_CMDBAR_PANE_STYLE);
+    // attach menu
+    m_CmdBar.AttachMenu(GetMenu());
+    // load command bar images
+    m_CmdBar.LoadImages(IDR_MAINFRAME);
+    // remove old menu
+    SetMenu(NULL);
 
-	HWND hWndToolBar = CreateSimpleToolBarCtrl(m_hWnd, IDR_MAINFRAME, FALSE, ATL_SIMPLE_TOOLBAR_PANE_STYLE); 
+    HWND hWndToolBar = CreateSimpleToolBarCtrl(m_hWnd, IDR_MAINFRAME, FALSE, ATL_SIMPLE_TOOLBAR_PANE_STYLE); 
 
-	CreateSimpleReBar(ATL_SIMPLE_REBAR_NOBORDER_STYLE);
-	AddSimpleReBarBand(hWndCmdBar);
-	AddSimpleReBarBand(hWndToolBar, NULL, TRUE);
+    CreateSimpleReBar(ATL_SIMPLE_REBAR_NOBORDER_STYLE);
+    AddSimpleReBarBand(hWndCmdBar);
+    AddSimpleReBarBand(hWndToolBar, NULL, TRUE);
 
-	CreateSimpleStatusBar();
+    CreateSimpleStatusBar();
     m_hWndClient =m_scanview.Create(m_hWnd, rcDefault, NULL, WS_CHILD  | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, WS_EX_CLIENTEDGE);
 
-	UIAddToolBar(hWndToolBar);
-	UISetCheck(ID_VIEW_TOOLBAR, 1);
-	UISetCheck(ID_VIEW_STATUS_BAR, 1);
+    UIAddToolBar(hWndToolBar);
+    UISetCheck(ID_VIEW_TOOLBAR, 1);
+    UISetCheck(ID_VIEW_STATUS_BAR, 1);
 
-	// register object for message filtering and idle updates
-	CMessageLoop* pLoop = _Module.GetMessageLoop();
-	ATLASSERT(pLoop != NULL);
-	pLoop->AddMessageFilter(this);
-	pLoop->AddIdleHandler(this);
+    // register object for message filtering and idle updates
+    CMessageLoop* pLoop = _Module.GetMessageLoop();
+    ATLASSERT(pLoop != NULL);
+    pLoop->AddMessageFilter(this);
+    pLoop->AddIdleHandler(this);
 
     workingMode = WORKING_MODE_IDLE;
     LidarMgr::GetInstance().lidar_drv->getDeviceInfo(devInfo);
+    //get scan mode information
+    modeVec_.clear();
+
+    LidarMgr::GetInstance().lidar_drv->getAllSupportedScanModes(modeVec_); 
+
+    _u16 typicalMode;
+    LidarMgr::GetInstance().lidar_drv->getTypicalScanMode(typicalMode); 
+
+    scanModeSubMenu_.CreateMenu();
+    scanModeMenuRecBegin_ = 2001;
+    std::vector<RplidarScanMode>::iterator modeIter = modeVec_.begin();
+    int index = 0;
+    for(; modeIter != modeVec_.end(); modeIter++)
+    {
+        scanModeSubMenu_.AppendMenuA(MF_STRING, scanModeMenuRecBegin_ + index, modeIter->scan_mode);
+        index++;
+    }
+    m_CmdBar.GetMenu().GetSubMenu(2).InsertMenuA(SCANMODE_SUB, MF_POPUP | MF_BYPOSITION, (UINT)scanModeSubMenu_.m_hMenu, "Scan Mode");
+    usingScanMode_ = typicalMode;
+    updateControlStatus();
+
     LidarMgr::GetInstance().lidar_drv->checkMotorCtrlSupport(support_motor_ctrl);
-    onUpdateTitle();
     // setup timer
     this->SetTimer(REFRESEH_TIMER, 1000/30);
     checkDeviceHealth();
     UISetCheck(ID_CMD_STOP, 1);
     forcescan = 0;
-    useExpressMode = true;
-    inExpressMode = false;
     UISetCheck(ID_OPTION_EXPRESSMODE, TRUE);
-	return 0;
+    return 0;
 }
 
 LRESULT CMainFrame::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
     LidarMgr::GetInstance().lidar_drv->stopMotor();
-	// unregister message filtering and idle updates
+    // unregister message filtering and idle updates
     this->KillTimer(REFRESEH_TIMER);
     
     CMessageLoop* pLoop = _Module.GetMessageLoop();
-	ATLASSERT(pLoop != NULL);
-	pLoop->RemoveMessageFilter(this);
-	pLoop->RemoveIdleHandler(this);
+    ATLASSERT(pLoop != NULL);
+    pLoop->RemoveMessageFilter(this);
+    pLoop->RemoveIdleHandler(this);
 
-	bHandled = FALSE;
+    bHandled = FALSE;
 
-	return 1;
+    return 1;
+}
+
+void CMainFrame::scanModeSelect(int mode)
+{
+    if((unsigned int)mode >= scanModeMenuRecBegin_ && (unsigned int)mode < scanModeMenuRecBegin_ + modeVec_.size())
+    {
+        usingScanMode_ = mode - scanModeMenuRecBegin_;
+        onSwitchMode(WORKING_MODE_SCAN);
+    }
 }
 
 LRESULT CMainFrame::OnFileExit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	PostMessage(WM_CLOSE);
-	return 0;
+    PostMessage(WM_CLOSE);
+    return 0;
 }
 
 LRESULT CMainFrame::OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	// TODO: add code to initialize document
+    // TODO: add code to initialize document
 
-	return 0;
+    return 0;
 }
 
 LRESULT CMainFrame::OnViewToolBar(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	static BOOL bVisible = TRUE;	// initially visible
-	bVisible = !bVisible;
-	CReBarCtrl rebar = m_hWndToolBar;
-	int nBandIndex = rebar.IdToIndex(ATL_IDW_BAND_FIRST + 1);	// toolbar is 2nd added band
-	rebar.ShowBand(nBandIndex, bVisible);
-	UISetCheck(ID_VIEW_TOOLBAR, bVisible);
-	UpdateLayout();
-	return 0;
+    static BOOL bVisible = TRUE;    // initially visible
+    bVisible = !bVisible;
+    CReBarCtrl rebar = m_hWndToolBar;
+    int nBandIndex = rebar.IdToIndex(ATL_IDW_BAND_FIRST + 1);    // toolbar is 2nd added band
+    rebar.ShowBand(nBandIndex, bVisible);
+    UISetCheck(ID_VIEW_TOOLBAR, bVisible);
+    UpdateLayout();
+    return 0;
 }
 
 LRESULT CMainFrame::OnViewStatusBar(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	BOOL bVisible = !::IsWindowVisible(m_hWndStatusBar);
-	::ShowWindow(m_hWndStatusBar, bVisible ? SW_SHOWNOACTIVATE : SW_HIDE);
-	UISetCheck(ID_VIEW_STATUS_BAR, bVisible);
-	UpdateLayout();
-	return 0;
+    BOOL bVisible = !::IsWindowVisible(m_hWndStatusBar);
+    ::ShowWindow(m_hWndStatusBar, bVisible ? SW_SHOWNOACTIVATE : SW_HIDE);
+    UISetCheck(ID_VIEW_STATUS_BAR, bVisible);
+    UpdateLayout();
+    return 0;
 }
 
 LRESULT CMainFrame::OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	CAboutDlg dlg;
-	dlg.DoModal();
-	return 0;
+    CAboutDlg dlg;
+    dlg.DoModal();
+    return 0;
 }
 
 
@@ -180,33 +211,27 @@ LRESULT CMainFrame::OnCmdReset(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 
     onSwitchMode(WORKING_MODE_IDLE);
     LidarMgr::GetInstance().lidar_drv->reset();
-	return 0;
+    return 0;
 }
 LRESULT CMainFrame::OnCmdStop(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
     onSwitchMode(WORKING_MODE_IDLE);
-	return 0;
+    m_scanview.stopScan();
+    return 0;
 }
 
 
 LRESULT CMainFrame::OnCmdScan(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
     onSwitchMode(WORKING_MODE_SCAN);
-	return 0;
+    return 0;
 }
 
 LRESULT CMainFrame::OnOptForcescan(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
     forcescan=!forcescan;
     UISetCheck(ID_OPT_FORCESCAN, forcescan?1:0);
-	return 0;
-}
-
-LRESULT CMainFrame::OnOptExpressMode(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
-{
-    useExpressMode=!useExpressMode;
-    UISetCheck(ID_OPTION_EXPRESSMODE, useExpressMode?1:0);
-	return 0;
+    return 0;
 }
 
 LRESULT CMainFrame::OnFileDumpdata(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
@@ -231,23 +256,47 @@ LRESULT CMainFrame::OnFileDumpdata(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOO
         break;
 
     }
-	return 0;
+    return 0;
 }
 
 
 void    CMainFrame::onRefreshScanData()
 {
-    rplidar_response_measurement_node_t nodes[2048];
+    rplidar_response_measurement_node_hq_t nodes[8192];
     size_t cnt = _countof(nodes);
-	RPlidarDriver * lidar_drv = LidarMgr::GetInstance().lidar_drv;
+    RPlidarDriver * lidar_drv = LidarMgr::GetInstance().lidar_drv;
 
-	if (IS_OK(lidar_drv->grabScanData(nodes, cnt, 0)))
+    if (IS_OK(lidar_drv->grabScanDataHq(nodes, cnt, 0)))
     {
-		float frequency = 0;
-        bool  is4kmode = false;
-		lidar_drv->getFrequency(inExpressMode, cnt, frequency, is4kmode);
-		m_scanview.setScanData(nodes, cnt, frequency, is4kmode);
+        float sampleDurationRefresh = modeVec_[usingScanMode_].us_per_sample;
+        m_scanview.setScanData(nodes, cnt, sampleDurationRefresh);
     }
+}
+
+void    CMainFrame::updateControlStatus()
+{
+    //update menu item scan mode text
+    char menuText[100];
+    sprintf(menuText, "%s%s", "Scan mode: ", modeVec_[usingScanMode_].scan_mode);
+    CString strTmp(menuText);
+    LPCTSTR lp = (LPCTSTR)strTmp;
+
+    m_CmdBar.GetMenu().GetSubMenu(2).ModifyMenuA(SCANMODE_SUB, MF_BYPOSITION, (UINT)scanModeSubMenu_.m_hMenu, lp);
+    scanModeSubMenu_.CheckMenuRadioItem(0, modeVec_.size()-1,usingScanMode_,MF_BYPOSITION);
+
+    //determine if menu items are usable
+    switch (workingMode)
+    {
+    case WORKING_MODE_IDLE:
+        m_CmdBar.GetMenu().GetSubMenu(2).EnableMenuItem(SCANMODE_SUB, MF_BYPOSITION | MF_ENABLED);
+        break;
+
+    case WORKING_MODE_SCAN:
+        m_CmdBar.GetMenu().GetSubMenu(2).EnableMenuItem(SCANMODE_SUB, MF_BYPOSITION | MF_DISABLED);
+        break;
+    }
+
+    onUpdateTitle();
 }
 
 void    CMainFrame::onUpdateTitle()
@@ -309,13 +358,8 @@ void    CMainFrame::onSwitchMode(int newMode)
             m_hWndClient = m_scanview;
             m_scanview.ShowWindow(SW_SHOW);
             checkDeviceHealth();
-            if (useExpressMode) {
-                LidarMgr::GetInstance().lidar_drv->checkExpressScanSupported(inExpressMode);
-            } else {
-                inExpressMode = false;
-            }
             LidarMgr::GetInstance().lidar_drv->startMotor();
-            LidarMgr::GetInstance().lidar_drv->startScan(forcescan, inExpressMode);
+            LidarMgr::GetInstance().lidar_drv->startScanExpress(forcescan, usingScanMode_);
             UISetCheck(ID_CMD_STOP, 0);
             UISetCheck(ID_CMD_GRAB_PEAK, 0);
             UISetCheck(ID_CMD_GRAB_FRAME, 0);
@@ -329,7 +373,7 @@ void    CMainFrame::onSwitchMode(int newMode)
     
     UpdateLayout();
     workingMode = newMode;
-    onUpdateTitle();
+    updateControlStatus();
 }
 
 void    CMainFrame::checkDeviceHealth()
@@ -351,8 +395,8 @@ LRESULT CMainFrame::OnSetFreq(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
     if (!support_motor_ctrl) {
         MessageBox("The device is not supported to set frequency.\n", "Warning", MB_OK);
     } else {
-	    CFreqSetDlg dlg;
-	    dlg.DoModal();
+        CFreqSetDlg dlg;
+        dlg.DoModal();
     }
-	return 0;
+    return 0;
 }

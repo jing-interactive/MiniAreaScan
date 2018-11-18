@@ -4,7 +4,7 @@
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
- *  Copyright (c) 2014 - 2016 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2014 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -38,33 +38,48 @@ class CSerialSelDlg : public CDialogImpl<CSerialSelDlg>,
     public CWinDataExchange<CSerialSelDlg>
 {
 public:
-	CComboBox	m_sel_box;
-	CSerialSelDlg();
-	enum { IDD = IDD_DLG_SERIAL_SEL };
+    CComboBox    m_sel_box;
+    CComboBox    m_comb_serialbaud;
+    CSerialSelDlg();
+    enum { IDD = IDD_DLG_SERIAL_SEL };
 
 
-	BEGIN_MSG_MAP(CSerialSelDlg)
-		COMMAND_HANDLER(IDC_COMB_SERIAL_SEL, CBN_SELCHANGE, OnCbnSelchangeCombSerialSel)
-		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-		COMMAND_ID_HANDLER(IDOK, OnOK)
-		COMMAND_ID_HANDLER(IDCANCEL, OnCancel)
-	END_MSG_MAP()
+    BEGIN_MSG_MAP(CSerialSelDlg)
+        COMMAND_HANDLER(IDC_COMB_SERIAL_SEL, CBN_SELCHANGE, OnCbnSelchangeCombSerialSel)
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        COMMAND_ID_HANDLER(IDOK, OnOK)
+        COMMAND_ID_HANDLER(IDCANCEL, OnCancel)
+        COMMAND_HANDLER(IDC_BUTTON_TCPSERVER, BN_CLICKED, OnBnClickedButtonTcpserver)
+        COMMAND_HANDLER(IDC_COMB_BAUDRATE, CBN_SELCHANGE, OnCbnSelchangeCombBaudrate)
+    END_MSG_MAP()
 
-	BEGIN_DDX_MAP(CSerialSelDlg)
-		DDX_CONTROL_HANDLE(IDC_COMB_SERIAL_SEL, m_sel_box)
-	END_DDX_MAP();
-	
-	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnCancel(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-
+    BEGIN_DDX_MAP(CSerialSelDlg)
+        DDX_CONTROL_HANDLE(IDC_COMB_BAUDRATE, m_comb_serialbaud)
+        DDX_CONTROL_HANDLE(IDC_COMB_SERIAL_SEL, m_sel_box)
+    END_DDX_MAP();
+    
+    LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+    LRESULT OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnCancel(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    
+    int     getSelectedBaudRate() {
+        return selectedBaudRate;
+    }
     int     getSelectedID() {
         return selectedID;
     }
-	LRESULT OnCbnSelchangeCombSerialSel(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    bool    isUseNetworing() {
+        return usingNetwork;
+    }
+    LRESULT OnCbnSelchangeCombSerialSel(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 protected:
     int     selectedID;
+    int     selectedBaudRate;
+    bool    usingNetwork;
+public:
+    LRESULT OnBnClickedButtonTcpserver(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnCbnSelchangeCombBaudrate(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 };
 
 /////////////////////////////////////////////////////////////////////////////

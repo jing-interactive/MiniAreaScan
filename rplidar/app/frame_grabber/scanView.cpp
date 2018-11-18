@@ -4,7 +4,7 @@
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
- *  Copyright (c) 2014 - 2016 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2014 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -34,7 +34,7 @@
 
 const int DEF_MARGIN = 20;
 const int DISP_RING_ABS_DIST  = 100;
-const float DISP_FULL_DIST    = 16000;
+const float DISP_FULL_DIST    = 28000;
 const float DISP_DEFAULT_DIST = 8000;
 const float DISP_MIN_DIST     = 1000;
 const float PI   = (float)3.14159265;
@@ -51,12 +51,13 @@ CScanView::CScanView()
 
     _mouse_angle = 0;
     _mouse_pt.x= _mouse_pt.y = 0;
+    _is_scanning = false;
 }
 
 BOOL CScanView::PreTranslateMessage(MSG* pMsg)
 {
-	pMsg;
-	return FALSE;
+    pMsg;
+    return FALSE;
 }
 
 void CScanView::DoPaint(CDCHandle dc)
@@ -168,13 +169,17 @@ void CScanView::onDrawSelf(CDCHandle dc)
         memDC.SetTextColor(RGB(255,0,0));
         sprintf(txtBuffer, "Current: %.2f Deg: %.2f", _scan_data[picked_point].dist,  _scan_data[picked_point].angle);
         memDC.TextOutA(DEF_MARGIN, DEF_MARGIN + 20, txtBuffer);
-    }
 
-    if (_is4kmode) {
         memDC.SetTextColor(RGB(255,255,255));
         memDC.SetDCBrushColor(RGB(255,0,0));
         memDC.Rectangle(clientRECT.Width() - 100, DEF_MARGIN + 25, clientRECT.Width() - 60, DEF_MARGIN + 30);
-        memDC.TextOutA(clientRECT.Width() - 100, DEF_MARGIN + 20, "4K");
+        int frequency = -1;
+        if(_is_scanning)
+            frequency = int(floor(1000.0 / _sample_duration+0.5));
+        else
+            frequency = 0;
+        sprintf(txtBuffer, "%d K", frequency);
+        memDC.TextOutA(clientRECT.Width() - 100, DEF_MARGIN + 20, txtBuffer);
     }
 
     dc.BitBlt(0, 0, clientRECT.Width(), clientRECT.Height()
@@ -221,7 +226,6 @@ int CScanView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     _last_update_ts = 0;
     _scan_speed = 0;
     _sample_counter = 0;
-    _is4kmode = false;
     return 0;//CScrollWindowImpl<CPeakgrabberView>::OnCreate(lpCreateStruct);
 }
 void CScanView::OnPaint(CDCHandle dc)
@@ -243,25 +247,30 @@ BOOL CScanView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
     if (_current_display_range > DISP_FULL_DIST) _current_display_range= DISP_FULL_DIST;
     else if (_current_display_range < DISP_MIN_DIST) _current_display_range = DISP_MIN_DIST;
     this->Invalidate();
-	return 0;
+    return 0;
 }
 
-void CScanView::setScanData(rplidar_response_measurement_node_t *buffer, size_t count, float frequency, bool is4kmode)
+void CScanView::setScanData(rplidar_response_measurement_node_hq_t *buffer, size_t count, float sampleDuration)
 {
     _scan_data.clear();
+    _is_scanning = true;
     for (int pos = 0; pos < (int)count; ++pos) {
         scanDot dot;
-        if (!buffer[pos].distance_q2) continue;
+        if (!buffer[pos].dist_mm_q2) continue;
 
-        dot.quality = (buffer[pos].sync_quality>>RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT);
-        dot.angle = (buffer[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)/64.0f;
-        dot.dist = buffer[pos].distance_q2/4.0f;
+        dot.quality = buffer[pos].quality;
+        dot.angle = buffer[pos].angle_z_q14 * 90.f / 16384.f;
+        dot.dist = buffer[pos].dist_mm_q2 /4.0f;
         _scan_data.push_back(dot);
     }
 
-    _is4kmode = is4kmode;
-    _scan_speed = frequency;
-
+    _sample_duration = sampleDuration;
+    _scan_speed = 1000000.0f / (count * sampleDuration);
     this->Invalidate();
 }
 
+void CScanView::stopScan()
+{
+    _is_scanning = false;
+    this->Invalidate();
+}

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,14 +19,12 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -89,15 +87,22 @@
     <ClInclude Include="..\..\..\sdk\src\arch\win32\timer.h" />
     <ClInclude Include="..\..\..\sdk\src\arch\win32\winthread.hpp" />
     <ClInclude Include="..\..\..\sdk\src\hal\abs_rxtx.h" />
+    <ClInclude Include="..\..\..\sdk\src\hal\assert.h" />
+    <ClInclude Include="..\..\..\sdk\src\hal\byteops.h" />
     <ClInclude Include="..\..\..\sdk\src\hal\event.h" />
     <ClInclude Include="..\..\..\sdk\src\hal\locker.h" />
+    <ClInclude Include="..\..\..\sdk\src\hal\socket.h" />
     <ClInclude Include="..\..\..\sdk\src\hal\thread.h" />
+    <ClInclude Include="..\..\..\sdk\src\hal\types.h" />
     <ClInclude Include="..\..\..\sdk\src\hal\util.h" />
+    <ClInclude Include="..\..\..\sdk\src\rplidar_driver_impl.h" />
     <ClInclude Include="..\..\..\sdk\src\rplidar_driver_serial.h" />
+    <ClInclude Include="..\..\..\sdk\src\rplidar_driver_TCP.h" />
     <ClInclude Include="..\..\..\sdk\src\sdkcommon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\sdk\src\arch\win32\net_serial.cpp" />
+    <ClCompile Include="..\..\..\sdk\src\arch\win32\net_socket.cpp" />
     <ClCompile Include="..\..\..\sdk\src\arch\win32\timer.cpp" />
     <ClCompile Include="..\..\..\sdk\src\hal\thread.cpp" />
     <ClCompile Include="..\..\..\sdk\src\rplidar_driver.cpp" />

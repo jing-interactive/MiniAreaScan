@@ -69,6 +69,24 @@
     <ClInclude Include="..\..\..\sdk\src\hal\event.h">
       <Filter>sdk\src\hal</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\sdk\src\hal\assert.h">
+      <Filter>sdk\src\hal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\sdk\src\hal\byteops.h">
+      <Filter>sdk\src\hal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\sdk\src\hal\socket.h">
+      <Filter>sdk\src\hal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\sdk\src\hal\types.h">
+      <Filter>sdk\src\hal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\sdk\src\rplidar_driver_TCP.h">
+      <Filter>sdk\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\sdk\src\rplidar_driver_impl.h">
+      <Filter>sdk\src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\sdk\src\arch\win32\net_serial.cpp">
@@ -82,6 +100,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\sdk\src\hal\thread.cpp">
       <Filter>sdk\src\hal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\sdk\src\arch\win32\net_socket.cpp">
+      <Filter>sdk\src\arch\win32</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

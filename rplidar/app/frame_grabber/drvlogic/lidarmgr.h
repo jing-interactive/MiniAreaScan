@@ -4,7 +4,7 @@
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
- *  Copyright (c) 2014 - 2016 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2014 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -35,7 +35,8 @@ public:
     
     LidarMgr();
     ~LidarMgr();
-    bool onConnect(const char * port);
+    bool onConnect(const char * port, int baudrate);
+    bool onConnectTcp(const char * ipStr, _u32 port, _u32 flag = 0);
     bool isConnected() const { return _isConnected; }
     void onDisconnect();
     bool checkDeviceHealth(int * errorCode = NULL);
@@ -43,7 +44,7 @@ public:
 public:
     rplidar_response_device_info_t devinfo;
 
-	static RPlidarDriver * lidar_drv;
+    static RPlidarDriver * lidar_drv;
     
 protected:
     static LidarMgr * g_instance;

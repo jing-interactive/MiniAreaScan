@@ -6,13 +6,18 @@
 #define IDR_MAINFRAME                   128
 #define IDD_DLG_SERIAL_SEL              201
 #define IDD_DLG_SETFREQ                 203
+#define IDD_DIG_TCP_SEL                 204
 #define IDC_COMB_SERIAL_SEL             1000
 #define IDC_EDIT1                       1020
+#define IDC_EDIT_IP                     1020
 #define IDC_BUTTON_FREQ_SET             1022
 #define IDC_SLIDER_FREQ                 1023
 #define IDC_STATIC_MINFREQ              1024
 #define IDC_STATIC_MAXFREQ              1025
 #define IDC_EDIT_FREQ                   1026
+#define IDC_BUTTON_TCPSERVER            1027
+#define IDC_COMB_BAUDRATE               1028
+#define IDC_EDIT_PORT                   1029
 #define ID_CMD_GRAB_FRAME               32776
 #define ID_CMD_SCAN                     32780
 #define ID_CMD_GRAB_PEAK                32781
@@ -37,9 +42,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        204
+#define _APS_NEXT_RESOURCE_VALUE        205
 #define _APS_NEXT_COMMAND_VALUE         32801
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_CONTROL_VALUE         1030
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

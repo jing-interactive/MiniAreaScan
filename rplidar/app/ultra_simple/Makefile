@@ -1,5 +1,6 @@
 #/*
 # * Copyright (C) 2014  RoboPeak
+# * Copyright (C) 2014 - 2018 Shanghai Slamtec Co., Ltd.
 # *
 # * This program is free software: you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -23,7 +24,7 @@ MODULE_NAME := $(notdir $(CURDIR))
 include $(HOME_TREE)/mak_def.inc
 
 CXXSRC += main.cpp
-C_INCLUDES += -I$(CURDIR)/../../sdk/include
+C_INCLUDES += -I$(CURDIR)/../../sdk/include -I$(CURDIR)/../../sdk/src
 
 EXTRA_OBJ := 
 LD_LIBS += -lstdc++ -lpthread

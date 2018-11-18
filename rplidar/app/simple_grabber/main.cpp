@@ -4,7 +4,7 @@
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
- *  Copyright (c) 2014 - 2016 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2014 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -53,12 +53,12 @@ using namespace rp::standalone::rplidar;
 
 void print_usage(int argc, const char * argv[])
 {
-    //printf("Simple LIDAR data grabber for RPLIDAR.\n"
-    //       "Version: "RPLIDAR_SDK_VERSION"\n"
-    //       "Usage:\n"
-    //       "%s <com port> [baudrate]\n"
-    //       "The default baudrate is 115200. Please refer to the datasheet for details.\n"
-    //       , argv[0]);
+    printf("Simple LIDAR data grabber for RPLIDAR.\n"
+           "Version: "RPLIDAR_SDK_VERSION"\n"
+           "Usage:\n"
+           "%s <com port> [baudrate]\n"
+           "The default baudrate is 115200(for A2) or 256000(for A3). Please refer to the datasheet for details.\n"
+           , argv[0]);
 }
 
 
@@ -109,7 +109,7 @@ u_result capture_and_display(RPlidarDriver * drv)
 {
     u_result ans;
     
-    rplidar_response_measurement_node_t nodes[360*2];
+    rplidar_response_measurement_node_t nodes[8192];
     size_t   count = _countof(nodes);
 
     printf("waiting for data...\n");
@@ -150,7 +150,7 @@ int main(int argc, const char * argv[]) {
     if (argc>2) opt_com_baudrate = strtoul(argv[2], NULL, 10);
 
     // create the driver instance
-    RPlidarDriver * drv = RPlidarDriver::CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT);
+    RPlidarDriver * drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
 
     if (!drv) {
         fprintf(stderr, "insufficent memory, exit\n");
@@ -188,13 +188,13 @@ int main(int argc, const char * argv[]) {
             printf("%02X", devinfo.serialnum[pos]);
         }
 
-       // printf("\n"
-			    //"Version: "RPLIDAR_SDK_VERSION"\n"
-       //         "Firmware Ver: %d.%02d\n"
-       //         "Hardware Rev: %d\n"
-       //         , devinfo.firmware_version>>8
-       //         , devinfo.firmware_version & 0xFF
-       //         , (int)devinfo.hardware_version);
+        printf("\n"
+                "Version: "RPLIDAR_SDK_VERSION"\n"
+                "Firmware Ver: %d.%02d\n"
+                "Hardware Rev: %d\n"
+                , devinfo.firmware_version>>8
+                , devinfo.firmware_version & 0xFF
+                , (int)devinfo.hardware_version);
 
 
         // check the device health
@@ -232,7 +232,7 @@ int main(int argc, const char * argv[]) {
 
         // take only one 360 deg scan and display the result as a histogram
         ////////////////////////////////////////////////////////////////////////////////
-        if (IS_FAIL(drv->startScan( /* true */ ))) // you can force rplidar to perform scan operation regardless whether the motor is rotating
+        if (IS_FAIL(drv->startScan( 0,1 ))) // you can force rplidar to perform scan operation regardless whether the motor is rotating
         {
             fprintf(stderr, "Error, cannot start the scan operation.\n");
             break;

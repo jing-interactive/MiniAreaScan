@@ -2,7 +2,7 @@
  *  RPLIDAR
  *  Win32 Demo Application
  *
- *  Copyright (c) 2016 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2016 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -36,7 +36,7 @@ CFreqSetDlg::CFreqSetDlg()
 
 LRESULT CFreqSetDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	CenterWindow(GetParent());
+    CenterWindow(GetParent());
     this->DoDataExchange();
 
     m_sld_freq.SetRange(0,MAX_MOTOR_PWM);
@@ -46,7 +46,7 @@ LRESULT CFreqSetDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
     str.Format("%d", DEFAULT_MOTOR_PWM);
     m_edt_freq.SetWindowTextA(str);
 
-	return TRUE;
+    return TRUE;
 }
 
 LRESULT CFreqSetDlg::OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
@@ -64,13 +64,13 @@ LRESULT CFreqSetDlg::OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL
 
     m_sld_freq.SetPos(pwm);
     LidarMgr::GetInstance().lidar_drv->setMotorPWM(pwm);
-	return 0;
+    return 0;
 }
 
 LRESULT CFreqSetDlg::OnCancel(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	EndDialog(wID);
-	return 0;
+    EndDialog(wID);
+    return 0;
 }
 
 void CFreqSetDlg::OnHScroll(UINT nSBCode, LPARAM /*lParam*/, CScrollBar pScrollBar)

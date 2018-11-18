@@ -4,7 +4,7 @@
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
- *  Copyright (c) 2014 - 2016 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2014 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -32,14 +32,23 @@
 
 #include "SerialSelDlg.h"
 
+static const int baudRateLists[] = {
+    115200,
+    256000,
+    57600,
+    1382400
+};
+
 CSerialSelDlg::CSerialSelDlg()
     : selectedID(-1)
+    , usingNetwork(false)
+    , selectedBaudRate(115200)
 {
 }
 
 LRESULT CSerialSelDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	CenterWindow(GetParent());
+    CenterWindow(GetParent());
     this->DoDataExchange();
     char buf[100]; 
     for (int pos= 0; pos<100; ++pos) {
@@ -48,23 +57,48 @@ LRESULT CSerialSelDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     }
     m_sel_box.SetCurSel(2);
     selectedID = 2;
-	return TRUE;
+
+    for (size_t pos = 0; pos < _countof(baudRateLists); ++pos) {
+        CString str;
+        str.Format("%d", baudRateLists[pos]);
+        m_comb_serialbaud.AddString(str);
+    }
+    m_comb_serialbaud.SetCurSel(0);
+
+    return TRUE;
 }
 
 LRESULT CSerialSelDlg::OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	EndDialog(wID);
-	return 0;
+    EndDialog(wID);
+    return 0;
 }
 
 LRESULT CSerialSelDlg::OnCancel(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	EndDialog(wID);
-	return 0;
+    EndDialog(wID);
+    return 0;
 }
 
 LRESULT CSerialSelDlg::OnCbnSelchangeCombSerialSel(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
     selectedID = m_sel_box.GetCurSel();
-	return 0;
+    return 0;
+}
+
+
+LRESULT CSerialSelDlg::OnBnClickedButtonTcpserver(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+    // TODO: Add your control notification handler code here
+    usingNetwork = true;
+    EndDialog(IDOK);
+    return 0;
+}
+
+
+LRESULT CSerialSelDlg::OnCbnSelchangeCombBaudrate(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+    // TODO: Add your control notification handler code here
+    selectedBaudRate = baudRateLists[m_comb_serialbaud.GetCurSel()];
+    return 0;
 }

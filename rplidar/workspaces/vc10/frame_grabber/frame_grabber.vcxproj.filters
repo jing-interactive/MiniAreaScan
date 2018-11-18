@@ -42,6 +42,9 @@
     <ClCompile Include="..\..\..\app\frame_grabber\FreqSetDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\app\frame_grabber\TcpChannelSelDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\app\frame_grabber\drvlogic\common.h">
@@ -69,6 +72,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\app\frame_grabber\FreqSetDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\app\frame_grabber\TcpChannelSelDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

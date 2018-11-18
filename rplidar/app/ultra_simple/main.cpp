@@ -4,7 +4,7 @@
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
- *  Copyright (c) 2014 - 2016 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2014 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -83,18 +83,24 @@ void ctrlc(int)
 
 int main(int argc, const char * argv[]) {
     const char * opt_com_path = NULL;
-    _u32         opt_com_baudrate = 115200;
+    _u32         baudrateArray[2] = {115200, 256000};
+    _u32         opt_com_baudrate = 0;
     u_result     op_result;
 
-    //printf("Ultra simple LIDAR data grabber for RPLIDAR.\n"
-    //       "Version: "RPLIDAR_SDK_VERSION"\n");
+    bool useArgcBaudrate = false;
+
+    printf("Ultra simple LIDAR data grabber for RPLIDAR.\n"
+           "Version: "RPLIDAR_SDK_VERSION"\n");
 
     // read serial port from the command line...
     if (argc>1) opt_com_path = argv[1]; // or set to a fixed value: e.g. "com3" 
 
     // read baud rate from the command line if specified...
-    if (argc>2) opt_com_baudrate = strtoul(argv[2], NULL, 10);
-
+    if (argc>2)
+    {
+        opt_com_baudrate = strtoul(argv[2], NULL, 10);
+        useArgcBaudrate = true;
+    }
 
     if (!opt_com_path) {
 #ifdef _WIN32
@@ -106,29 +112,62 @@ int main(int argc, const char * argv[]) {
     }
 
     // create the driver instance
-    RPlidarDriver * drv = RPlidarDriver::CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT);
-    
+	RPlidarDriver * drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
     if (!drv) {
         fprintf(stderr, "insufficent memory, exit\n");
         exit(-2);
     }
-
-
+    
+    rplidar_response_device_info_t devinfo;
+    bool connectSuccess = false;
     // make connection...
-    if (IS_FAIL(drv->connect(opt_com_path, opt_com_baudrate))) {
+    if(useArgcBaudrate)
+    {
+        if(!drv)
+            drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
+        if (IS_OK(drv->connect(opt_com_path, opt_com_baudrate)))
+        {
+            op_result = drv->getDeviceInfo(devinfo);
+
+            if (IS_OK(op_result)) 
+            {
+                connectSuccess = true;
+            }
+            else
+            {
+                delete drv;
+                drv = NULL;
+            }
+        }
+    }
+    else
+    {
+        size_t baudRateArraySize = (sizeof(baudrateArray))/ (sizeof(baudrateArray[0]));
+        for(size_t i = 0; i < baudRateArraySize; ++i)
+        {
+            if(!drv)
+                drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
+            if(IS_OK(drv->connect(opt_com_path, baudrateArray[i])))
+            {
+                op_result = drv->getDeviceInfo(devinfo);
+
+                if (IS_OK(op_result)) 
+                {
+                    connectSuccess = true;
+                    break;
+                }
+                else
+                {
+                    delete drv;
+                    drv = NULL;
+                }
+            }
+        }
+    }
+    if (!connectSuccess) {
+        
         fprintf(stderr, "Error, cannot bind to the specified serial port %s.\n"
             , opt_com_path);
-        goto on_finished;
-    }
-
-    rplidar_response_device_info_t devinfo;
-
-	// retrieving the device info
-    ////////////////////////////////////////
-    op_result = drv->getDeviceInfo(devinfo);
-
-    if (IS_FAIL(op_result)) {
-        fprintf(stderr, "Error, cannot get device info.\n");
         goto on_finished;
     }
 
@@ -145,20 +184,22 @@ int main(int argc, const char * argv[]) {
             , devinfo.firmware_version & 0xFF
             , (int)devinfo.hardware_version);
 
+
+
     // check health...
     if (!checkRPLIDARHealth(drv)) {
         goto on_finished;
     }
 
-	signal(SIGINT, ctrlc);
+    signal(SIGINT, ctrlc);
     
-	drv->startMotor();
+    drv->startMotor();
     // start scan...
-    drv->startScan();
+    drv->startScan(0,1);
 
     // fetech result and print it out...
     while (1) {
-        rplidar_response_measurement_node_t nodes[360*2];
+        rplidar_response_measurement_node_t nodes[8192];
         size_t   count = _countof(nodes);
 
         op_result = drv->grabScanData(nodes, count);
@@ -175,8 +216,8 @@ int main(int argc, const char * argv[]) {
         }
 
         if (ctrl_c_pressed){ 
-			break;
-		}
+            break;
+        }
     }
 
     drv->stop();
@@ -184,6 +225,7 @@ int main(int argc, const char * argv[]) {
     // done!
 on_finished:
     RPlidarDriver::DisposeDriver(drv);
+    drv = NULL;
     return 0;
 }
 

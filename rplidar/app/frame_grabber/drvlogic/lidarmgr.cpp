@@ -4,7 +4,7 @@
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
- *  Copyright (c) 2014 - 2016 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2014 - 2018 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -38,7 +38,6 @@ LidarMgr & LidarMgr::GetInstance()
 
     if (g_instance) return *g_instance;
     g_instance = new LidarMgr();
-	lidar_drv = RPlidarDriver::CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT);
     return *g_instance;
 }
 
@@ -52,9 +51,9 @@ LidarMgr::~LidarMgr()
 {
     rp::hal::AutoLocker l(g_oplocker);
     onDisconnect();
-	delete g_instance;
-	g_instance = NULL;
-	lidar_drv->DisposeDriver(lidar_drv);
+    delete g_instance;
+    g_instance = NULL;
+    RPlidarDriver::DisposeDriver(lidar_drv);
 }
 
 void LidarMgr::onDisconnect()
@@ -94,12 +93,34 @@ bool  LidarMgr::checkDeviceHealth(int * errorCode)
     return ans;
 }
 
-bool LidarMgr::onConnect(const char * port)
+bool LidarMgr::onConnect(const char * port, int baudrate)
 {
     if (_isConnected) return true;
 
-    if (IS_FAIL(lidar_drv->connect(port, 115200))) return false;
+    if(!lidar_drv)
+        lidar_drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
+
+    if (IS_FAIL(lidar_drv->connect(port, baudrate))) return false;
     // retrieve the devinfo
+    u_result ans = lidar_drv->getDeviceInfo(devinfo);
+
+    if (IS_FAIL(ans)) {
+        return false;
+    }
+
+    _isConnected = true;
+    return true;
+}
+
+bool LidarMgr::onConnectTcp(const char * ipStr, _u32 port, _u32 flag)
+{
+    if (_isConnected) return true;
+
+    if(!lidar_drv)
+        lidar_drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_TCP);
+
+    if (IS_FAIL(lidar_drv->connect(ipStr, port))) return false;
+     // retrieve the devinfo
     u_result ans = lidar_drv->getDeviceInfo(devinfo);
 
     if (IS_FAIL(ans)) {
