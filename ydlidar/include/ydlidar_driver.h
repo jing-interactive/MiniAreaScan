@@ -198,7 +198,8 @@ struct LaserConfig {
 //! A struct for returning laser readings from the YDLIDAR
 struct LaserScan {
 	//! Array of ranges
-	std::vector<float> ranges;
+    std::vector<float> ranges;
+    std::vector<float> angles;
 	//! Array of intensities
 	std::vector<float> intensities;
 	//! Self reported time stamp in nanoseconds

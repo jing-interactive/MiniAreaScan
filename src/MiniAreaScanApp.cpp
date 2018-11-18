@@ -168,8 +168,9 @@ public:
         mDevice->update();
         auto centerPt = getWindowCenter();
         mFrontMat.setTo(cv::Scalar(0));
-        vector<cv::Point> points(mDevice->scanCount);
-        for (int pos = 0; pos < mDevice->scanCount; pos++) {
+        int scanCount = mDevice->scanData.size();
+        vector<cv::Point> points(scanCount);
+        for (int pos = 0; pos < scanCount; pos++) {
             float distPixel = mDevice->scanData[pos].y*MM_TO_PIXEL;
             float rad = (float)(mDevice->scanData[pos].x*3.1415 / 180.0);
             points[pos].x = sin(rad)*(distPixel)+centerPt.x;
@@ -181,7 +182,7 @@ public:
             //gl::drawSolidCircle({ points[pos].x, points[pos].y }, 1);
         }
 
-        if (mDevice->scanCount > 0)
+        if (scanCount > 0)
         {
             const Point* pts = &points[0];
             const int npts = points.size();

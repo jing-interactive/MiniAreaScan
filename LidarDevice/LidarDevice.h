@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include "cinder/Vector.h"
 
 struct LidarDevice
@@ -17,6 +18,5 @@ struct LidarDevice
 
     virtual void update() = 0;
 
-    ci::vec2 scanData[360 * 2];
-    size_t scanCount = _countof(scanData);
+    std::vector<ci::vec2> scanData;
 };

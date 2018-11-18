@@ -11,7 +11,6 @@ using namespace ydlidar;
 
 CYdLidar drv;
 bool running = false;
-LaserScan scan;
 
 bool YdLidarDevice::setup(const std::string &serialPort)
 {
@@ -48,11 +47,19 @@ bool YdLidarDevice::isValid()
 void YdLidarDevice::update()
 {
     bool hardError;
+    LaserScan scan;
 
     if (drv.doProcessSimple(scan, hardError))
     {
         static char info[256];
-        sprintf(info, "Scan received: %u ranges\n", (unsigned int)scan.ranges.size());
+        sprintf(info, "Scan received: %u ranges", (unsigned int)scan.ranges.size());
         info_(info);
+
+        scanData.resize(scan.ranges.size());
+        for (int pos = 0; pos < scan.ranges.size(); ++pos)
+        {
+            scanData[pos].x = scan.angles[pos];
+            scanData[pos].y = scan.ranges[pos] * 1000;
+        }
     }
 }

@@ -130,6 +130,7 @@ bool  CYdLidar::doProcessSimple(LaserScan &outscan, bool &hardwareError) {
             int angle_start = 180 + m_MinAngle;
             int node_start = all_nodes_counts*(angle_start / 360.0f);
 
+            scan_msg.angles.resize(counts);
             scan_msg.ranges.resize(counts);
             scan_msg.intensities.resize(counts);
             float range = 0.0;
@@ -148,8 +149,8 @@ bool  CYdLidar::doProcessSimple(LaserScan &outscan, bool &hardwareError) {
                     index = all_nodes_counts - 1 - (i - all_nodes_counts / 2);
                 }
 
+                float angle = (float)((angle_compensate_nodes[i].angle_q6_checkbit >> LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f);
                 if (m_IgnoreArray.size() != 0) {
-                    float angle = (float)((angle_compensate_nodes[i].angle_q6_checkbit >> LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f);
                     if (angle > 180) {
                         angle = 360 - angle;
                     }
@@ -171,6 +172,7 @@ bool  CYdLidar::doProcessSimple(LaserScan &outscan, bool &hardwareError) {
 
                 int pos = index - node_start;
                 if (0 <= pos && pos < counts) {
+                    scan_msg.angles[pos] = angle;
                     scan_msg.ranges[pos] = range;
                     scan_msg.intensities[pos] = intensity;
                 }

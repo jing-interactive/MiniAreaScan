@@ -5,7 +5,6 @@
 using namespace rp::standalone::rplidar;
 
 RPlidarDriver *drv = nullptr;
-rplidar_response_measurement_node_t nodes[360 * 2];
 
 bool RpLidarDevice::setup(const std::string &serialPort)
 {
@@ -112,6 +111,9 @@ void RpLidarDevice::update()
     if (!drv->isConnected())
         return;
 
+    const int SCAN_COUNT = 360 * 2;
+    rplidar_response_measurement_node_t nodes[SCAN_COUNT];
+    size_t scanCount = 0;
     if (IS_FAIL(drv->grabScanData(nodes, scanCount)))
     {
         info_("grabScanData() fails");
@@ -124,6 +126,7 @@ void RpLidarDevice::update()
         return;
     }
 
+    scanData.resize(scanCount);
     for (int pos = 0; pos < scanCount; ++pos)
     {
         scanData[pos].x = (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f;
