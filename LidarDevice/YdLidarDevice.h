@@ -8,4 +8,5 @@ struct YdLidarDevice : public LidarDevice
     virtual ~YdLidarDevice();
     virtual bool isValid();
     virtual void update();
+    bool running = false;
 };

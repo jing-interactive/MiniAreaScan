@@ -111,10 +111,10 @@ void RpLidarDevice::update()
     if (!drv->isConnected())
         return;
 
-    const int SCAN_COUNT = 360 * 2;
-    rplidar_response_measurement_node_t nodes[SCAN_COUNT];
-    size_t scanCount = 0;
-    if (IS_FAIL(drv->grabScanData(nodes, scanCount)))
+    const int SCAN_COUNT = 8192;
+    rplidar_response_measurement_node_hq_t nodes[SCAN_COUNT];
+    size_t scanCount = SCAN_COUNT;
+    if (IS_FAIL(drv->grabScanDataHq(nodes, scanCount)))
     {
         info_("grabScanData() fails");
         return;
@@ -129,7 +129,7 @@ void RpLidarDevice::update()
     scanData.resize(scanCount);
     for (int pos = 0; pos < scanCount; ++pos)
     {
-        scanData[pos].x = (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f;
-        scanData[pos].y = nodes[pos].distance_q2 / 4.0f;
+        scanData[pos].x = nodes[pos].angle_z_q14 * 90.f / 16384.f;
+        scanData[pos].y = nodes[pos].dist_mm_q2 / 4.0f;
     }
 }

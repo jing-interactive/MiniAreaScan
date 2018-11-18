@@ -10,7 +10,6 @@ using namespace ydlidar;
 #endif
 
 CYdLidar drv;
-bool running = false;
 
 bool YdLidarDevice::setup(const std::string &serialPort)
 {
@@ -53,7 +52,7 @@ void YdLidarDevice::update()
     {
         static char info[256];
         sprintf(info, "Scan received: %u ranges", (unsigned int)scan.ranges.size());
-        info_(info);
+        //info_(info);
 
         scanData.resize(scan.ranges.size());
         for (int pos = 0; pos < scan.ranges.size(); ++pos)

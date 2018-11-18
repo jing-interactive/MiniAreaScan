@@ -58,7 +58,7 @@ public:
             });
         }
 
-        mOscSender = std::make_shared<osc::SenderUdp>(10000, _ADDRESS, _TUIO_PORT);
+        mOscSender = std::make_unique<osc::SenderUdp>(10000, _ADDRESS, _TUIO_PORT);
         mOscSender->bind();
 
         getWindow()->setSize(APP_WIDTH, APP_HEIGHT);
@@ -144,6 +144,10 @@ public:
         {
             quit();
         }
+        if (code == KeyEvent::KEY_SPACE)
+        {
+            updateBack();
+        }
     }
 
     void update() override
@@ -172,7 +176,7 @@ public:
         vector<cv::Point> points(scanCount);
         for (int pos = 0; pos < scanCount; pos++) {
             float distPixel = mDevice->scanData[pos].y*MM_TO_PIXEL;
-            float rad = (float)(mDevice->scanData[pos].x*3.1415 / 180.0);
+            float rad = (float)((mDevice->scanData[pos].x - BASE_ANGLE)*3.1415 / 180.0);
             points[pos].x = sin(rad)*(distPixel)+centerPt.x;
             points[pos].y = centerPt.y - cos(rad)*(distPixel);
 
@@ -203,12 +207,16 @@ private:
         {
             updateBack();
         }
-        if (mMM_TO_PIXEL != MM_TO_PIXEL)
+        if (mMMtoPixel != MM_TO_PIXEL)
         {
-            mMM_TO_PIXEL = MM_TO_PIXEL;
+            mMMtoPixel = MM_TO_PIXEL;
             updateBack();
         }
-
+        if (mBaseAngle != BASE_ANGLE)
+        {
+            mBaseAngle = BASE_ANGLE;
+            updateBack();
+        }
         mDiffMat = mBackMat - mFrontMat;
 
 #if 0
@@ -403,8 +411,9 @@ private:
     } mLayout;
 
     params::InterfaceGlRef mParams;
-    std::shared_ptr<osc::SenderUdp> mOscSender;
-    float mMM_TO_PIXEL = -1;
+    std::unique_ptr<osc::SenderUdp> mOscSender;
+    float mMMtoPixel = -1;
+    float mBaseAngle = -1;
 
     gl::TextureRef mTexture;
 
