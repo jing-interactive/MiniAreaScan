@@ -65,28 +65,15 @@ public:
 
         mLogo = am::texture2d("logo.png");
         mShader = am::glslProg("texture");
-
-        mFrontMat = cv::Mat1b(APP_HEIGHT, APP_WIDTH);
-        mDiffMat = cv::Mat1b(APP_HEIGHT, APP_WIDTH);
-
-#if 0
-        mFrontSurface = Surface(mFrontMat.ptr(), APP_WIDTH, APP_HEIGHT, mFrontMat.step, SurfaceChannelOrder::RGB);
-        mBackSurface = Surface(mBackMat.ptr(), APP_WIDTH, APP_HEIGHT, mBackMat.step, SurfaceChannelOrder::RGB);
-        mDiffSurface = Surface(mDiffMat.ptr(), APP_WIDTH, APP_HEIGHT, mDiffMat.step, SurfaceChannelOrder::RGB);
-#else
-        mFrontSurface = Channel(APP_WIDTH, APP_HEIGHT, mFrontMat.step, 1, mFrontMat.ptr());
-        mDiffSurface = Channel(APP_WIDTH, APP_HEIGHT, mDiffMat.step, 1, mDiffMat.ptr());
-#endif
-
     }
 
     void resize() override
     {
-        mLayout.width = getWindowWidth();
-        mLayout.height = getWindowHeight();
+        APP_WIDTH = mLayout.width = getWindowWidth();
+        APP_HEIGHT = mLayout.height = getWindowHeight();
         mLayout.halfW = mLayout.width / 2;
         mLayout.halfH = mLayout.height / 2;
-        mLayout.spc = mLayout.width * 0.04;
+        mLayout.spc = mLayout.height * 0.02;
 
         for (int x = 0; x < 2; x++)
         {
@@ -111,6 +98,12 @@ public:
         }
 
         mParams->setPosition(mLayout.canvases[1].getUpperLeft());
+
+        mFrontMat = cv::Mat1b(APP_HEIGHT, APP_WIDTH);
+        mDiffMat = cv::Mat1b(APP_HEIGHT, APP_WIDTH);
+        mFrontSurface = Channel(APP_WIDTH, APP_HEIGHT, mFrontMat.step, 1, mFrontMat.ptr());
+        mDiffSurface = Channel(APP_WIDTH, APP_HEIGHT, mDiffMat.step, 1, mDiffMat.ptr());
+        mBackTexture.reset();
     }
 
     void draw() override
@@ -127,7 +120,7 @@ public:
         if (mBackTexture)
         {
             gl::ScopedGlslProg prog(mShader);
-            gl::ScopedTextureBind tex0(mTexture);
+            gl::ScopedTextureBind tex0(mFrontTexture);
             gl::drawSolidRect(mLayout.canvases[0]);
             gl::ScopedTextureBind tex1(mBackTexture);
             gl::drawSolidRect(mLayout.canvases[3]);
@@ -188,10 +181,17 @@ public:
 
         if (scanCount > 0)
         {
-            const Point* pts = &points[0];
-            const int npts = points.size();
-            cv::fillPoly(mFrontMat, &pts, &npts, 1, cv::Scalar(255));
-            updateTexture(mFrontTexture, mFrontSurface);
+            if (POINT_MODE)
+            {
+                for (auto& pt : points)
+                    cv::circle(mFrontMat, pt, 2, cv::Scalar(255), -1);
+            }
+            else
+            {
+                const Point* pts = &points[0];
+                const int npts = points.size();
+                cv::fillPoly(mFrontMat, &pts, &npts, 1, cv::Scalar(255));
+            }
         }
 
         updateDepthRelated();
@@ -201,7 +201,7 @@ private:
 
     void updateDepthRelated()
     {
-        updateTexture(mTexture, mFrontSurface);
+        updateTexture(mFrontTexture, mFrontSurface);
 
         if (!mBackTexture)
         {
@@ -414,8 +414,6 @@ private:
     std::unique_ptr<osc::SenderUdp> mOscSender;
     float mMMtoPixel = -1;
     float mBaseAngle = -1;
-
-    gl::TextureRef mTexture;
 
     // vision
     BlobTracker mBlobTracker;

@@ -18,5 +18,5 @@ struct LidarDevice
 
     virtual void update() = 0;
 
-    std::vector<ci::vec2> scanData;
+    std::vector<ci::vec3> scanData;
 };

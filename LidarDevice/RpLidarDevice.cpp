@@ -131,5 +131,8 @@ void RpLidarDevice::update()
     {
         scanData[pos].x = nodes[pos].angle_z_q14 * 90.f / 16384.f;
         scanData[pos].y = nodes[pos].dist_mm_q2 / 4.0f;
+        scanData[pos].z = nodes[pos].quality;
+
+        //if (scanData[pos].y == 0) scanData[pos].y = 2000;
     }
 }
