@@ -1,0 +1,14 @@
+
+{
+	"angle_offset" : 180.0,
+	"connect_path" : "Serial:COM3,115200",
+	"show_lidar_scan" : 1,
+	"show_touch_point_coordination" : 1,
+	"touch_area" : 
+	[
+		6.345852851867676,
+		-1.815645098686218,
+		8.937419891357422,
+		0.09882563352584839
+	]
+}
