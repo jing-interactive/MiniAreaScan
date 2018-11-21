@@ -61,6 +61,9 @@
     <Filter Include="Blocks\ydlidar">
       <UniqueIdentifier>{01101e83-0e1d-4dc2-b506-308ab30e0f00}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lidar">
+      <UniqueIdentifier>{5559fa12-0a1e-42da-8a19-ff41d77b4e5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\MiniAreaScanApp.cpp">
@@ -168,17 +171,20 @@
     <ClCompile Include="..\ydlidar\src\impl\windows\win_timer.cpp">
       <Filter>Blocks\ydlidar</Filter>
     </ClCompile>
-    <ClCompile Include="..\LidarDevice\LidarDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\LidarDevice\RpLidarDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\LidarDevice\YdLidarDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\rplidar\sdk\src\arch\win32\net_socket.cpp">
       <Filter>Blocks\rplidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LidarDevice\LidarDevice.cpp">
+      <Filter>Lidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LidarDevice\RpLidarDevice.cpp">
+      <Filter>Lidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LidarDevice\YdLidarDevice.cpp">
+      <Filter>Lidar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Update.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -273,12 +279,15 @@
       <Filter>Blocks\ydlidar</Filter>
     </ClInclude>
     <ClInclude Include="..\LidarDevice\LidarDevice.h">
-      <Filter>Source Files</Filter>
+      <Filter>Lidar</Filter>
     </ClInclude>
     <ClInclude Include="..\LidarDevice\RpLidarDevice.h">
-      <Filter>Source Files</Filter>
+      <Filter>Lidar</Filter>
     </ClInclude>
     <ClInclude Include="..\LidarDevice\YdLidarDevice.h">
+      <Filter>Lidar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\MiniAreaScanApp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

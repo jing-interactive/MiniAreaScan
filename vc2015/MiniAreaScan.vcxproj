@@ -148,6 +148,7 @@
     <ClInclude Include="..\rplidar\sdk\src\rplidar_driver_serial.h" />
     <ClInclude Include="..\rplidar\sdk\src\sdkcommon.h" />
     <ClInclude Include="..\src\BlobTracker.h" />
+    <ClInclude Include="..\src\MiniAreaScanApp.h" />
     <ClInclude Include="..\src\point2d.h" />
     <ClInclude Include="..\ydlidar\include\CYdLidar.h" />
     <ClInclude Include="..\ydlidar\include\locker.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="..\rplidar\sdk\src\arch\win32\timer.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\hal\thread.cpp" />
     <ClCompile Include="..\rplidar\sdk\src\rplidar_driver.cpp" />
+    <ClCompile Include="..\src\Update.cpp" />
     <ClCompile Include="..\src\BlobTracker.cpp" />
     <ClCompile Include="..\src\MiniAreaScanApp.cpp" />
     <ClCompile Include="..\..\Cinder\blocks\Cinder-VNM\src\AssetManager.cpp" />

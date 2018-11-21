@@ -57,11 +57,9 @@ void YdLidarDevice::update()
         scanData.resize(scan.ranges.size());
         for (int pos = 0; pos < scan.ranges.size(); ++pos)
         {
-            scanData[pos].x = scan.angles[pos];
-            scanData[pos].y = scan.ranges[pos] * 1000;
-            scanData[pos].z = scan.intensities[pos];
-
-            //if (scanData[pos].y == 0) scanData[pos].y = 2000;
+            scanData[pos].angle = scan.angles[pos];
+            scanData[pos].dist = scan.ranges[pos] * 1000;
+            scanData[pos].valid = (scan.intensities[pos] != 0);
         }
     }
 }

@@ -50,6 +50,10 @@ bool RpLidarDevice::setup(const std::string &serialPort)
         return false;
     }
 
+#if 0
+    lidarDevice_->setMotorPWM(600);
+#endif
+
     if (IS_FAIL(drv->startMotor()))
     {
         info_("startMotor() fails");
@@ -129,10 +133,8 @@ void RpLidarDevice::update()
     scanData.resize(scanCount);
     for (int pos = 0; pos < scanCount; ++pos)
     {
-        scanData[pos].x = nodes[pos].angle_z_q14 * 90.f / 16384.f;
-        scanData[pos].y = nodes[pos].dist_mm_q2 / 4.0f;
-        scanData[pos].z = nodes[pos].quality;
-
-        //if (scanData[pos].y == 0) scanData[pos].y = 2000;
+        scanData[pos].angle = nodes[pos].angle_z_q14 * 90.f / 16384.f;
+        scanData[pos].dist = nodes[pos].dist_mm_q2 / 4.0f;
+        scanData[pos].valid = (nodes[pos].dist_mm_q2 != 0);
     }
 }
