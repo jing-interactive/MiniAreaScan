@@ -12,16 +12,6 @@ struct LidarScanPoint
 
 typedef std::vector<LidarScanPoint> LidarScan;
 
-struct TouchPointStruct
-{
-    float x;
-    float y;
-    float radius;
-
-    TouchPointStruct() :x(0), y(0), radius(0.0f) {}
-    TouchPointStruct(int n_x, int n_y, float n_radius) :x(n_x), y(n_y), radius(n_radius) {}
-};
-
 struct LidarDevice
 {
     void info_(const std::string &err);
@@ -30,8 +20,6 @@ struct LidarDevice
 
     virtual bool setup(const std::string &serialPort) = 0;
 
-    LidarDevice();
-
     virtual ~LidarDevice() {};
     
     virtual bool isValid() = 0;
@@ -39,12 +27,6 @@ struct LidarDevice
     virtual void update() = 0;
 
     LidarScan scanData;
-    std::vector<TouchPointStruct> getTouchPoints();
-private:
-    std::vector<TouchPointStruct> s_touchPointList;
-
-    int screenWidth;
-    int screenHeight;
 };
 
 
