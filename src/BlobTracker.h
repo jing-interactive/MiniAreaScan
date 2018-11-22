@@ -136,7 +136,7 @@ struct BlobFinder
         bool handOnlyMode;
         int handDistance;
     };
-    static void execute(cv::Mat &src, std::vector<Blob> &blobs, const Option& option);
+    static std::vector<Blob> execute(cv::Mat &src, const Option& option);
 };
 
 class BlobTracker

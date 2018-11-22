@@ -26,11 +26,8 @@ void MiniAreaScanApp::setup()
 
     {
         mParams = createConfigUI({ 400, 600 });
-        std::vector<string> smoothNames = { "Off", "Light", "Middle", "High" };
-        ADD_ENUM_TO_INT(mParams, TRACKING_SMOOTH, smoothNames);
 
         mParams->addParam("FPS", &mFps, true);
-        mParams->addButton("Set Bg", std::bind(&MiniAreaScanApp::updateBack, this));
         mParams->addButton("Reset In/Out", [] {
             INPUT_X1 = INPUT_Y1 = OUTPUT_X1 = OUTPUT_Y1 = 0;
             INPUT_X2 = INPUT_Y2 = OUTPUT_X2 = OUTPUT_Y2 = 1;
@@ -73,6 +70,7 @@ void MiniAreaScanApp::update()
     mDevice->update();
     auto centerPt = getWindowCenter();
     mFrontMat.setTo(cv::Scalar(0));
+    mDiffMat.setTo(cv::Scalar(0));
     int scanCount = mDevice->scanData.size();
     vector<cv::Point> points(scanCount);
     for (int pos = 0; pos < scanCount; pos++) {
@@ -87,21 +85,11 @@ void MiniAreaScanApp::update()
         //gl::drawSolidCircle({ points[pos].x, points[pos].y }, 1);
     }
 
-    if (scanCount > 0)
+    for (auto& pt : points)
     {
-        if (POINT_MODE)
-        {
-            for (auto& pt : points)
-                cv::circle(mFrontMat, pt, 2, cv::Scalar(255), -1);
-        }
-        else
-        {
-            const Point* pts = &points[0];
-            const int npts = points.size();
-            cv::fillPoly(mFrontMat, &pts, &npts, 1, cv::Scalar(255));
-        }
+        cv::circle(mDiffMat, pt, DOT_RADIUS, cv::Scalar(255), -1);
+        cv::circle(mFrontMat, pt, 3, cv::Scalar(255), -1);
     }
-
     updateDepthRelated();
 }
 
@@ -110,21 +98,14 @@ void MiniAreaScanApp::updateDepthRelated()
 {
     updateTexture(mFrontTexture, mFrontSurface);
 
-    if (!mBackTexture)
-    {
-        updateBack();
-    }
     if (mMMtoPixel != MM_TO_PIXEL)
     {
         mMMtoPixel = MM_TO_PIXEL;
-        updateBack();
     }
     if (mBaseAngle != BASE_ANGLE)
     {
         mBaseAngle = BASE_ANGLE;
-        updateBack();
     }
-    mDiffMat = mBackMat - mFrontMat;
 
 #if 0
     int cx = CENTER_X * APP_WIDTH;
@@ -161,35 +142,11 @@ void MiniAreaScanApp::updateDepthRelated()
     }
 #endif
 
-    if (TRACKING_SMOOTH > 0)
-    {
-        cv::Mat element = getStructuringElement(cv::MORPH_RECT, cv::Size(TRACKING_SMOOTH * 2 + 1, TRACKING_SMOOTH * 2 + 1),
-            cv::Point(TRACKING_SMOOTH, TRACKING_SMOOTH));
-        cv::morphologyEx(mDiffMat, mDiffMat, cv::MORPH_OPEN, element);
-    }
-
     updateTexture(mDiffTexture, mDiffSurface);
-    std::vector<Blob> blobs;
-#if 1
-    auto points = mDevice->getTouchPoints();
-    for (auto& pt : points)
-    {
-        Blob b;
-        b.center = { pt.x, pt.y };
-        blobs.push_back(b);
-    }
-#else
+
     BlobFinder::Option option;
     option.minArea = MIN_AREA;
-    BlobFinder::execute(mDiffMat, blobs, option);
-#endif
+    auto blobs = BlobFinder::execute(mDiffMat, option);
     mBlobTracker.trackBlobs(blobs);
     sendTuioMessage(*mOscSender, mBlobTracker);
-}
-
-void MiniAreaScanApp::updateBack()
-{
-    mBackMat = mFrontMat.clone();
-    mBackSurface = Channel(APP_WIDTH, APP_HEIGHT, mBackMat.step, 1, mBackMat.ptr());
-    updateTexture(mBackTexture, mBackSurface);
 }

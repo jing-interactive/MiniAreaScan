@@ -42,7 +42,6 @@ void MiniAreaScanApp::resize()
     mDiffMat = cv::Mat1b(APP_HEIGHT, APP_WIDTH);
     mFrontSurface = Channel(APP_WIDTH, APP_HEIGHT, mFrontMat.step, 1, mFrontMat.ptr());
     mDiffSurface = Channel(APP_WIDTH, APP_HEIGHT, mDiffMat.step, 1, mDiffMat.ptr());
-    mBackTexture.reset();
 }
 
 void MiniAreaScanApp::draw()
@@ -56,13 +55,11 @@ void MiniAreaScanApp::draw()
         gl::disableAlphaBlending();
     }
 
-    if (mBackTexture)
+    if (mDiffTexture)
     {
         gl::ScopedGlslProg prog(mShader);
         gl::ScopedTextureBind tex0(mFrontTexture);
         gl::drawSolidRect(mLayout.canvases[0]);
-        gl::ScopedTextureBind tex1(mBackTexture);
-        gl::drawSolidRect(mLayout.canvases[3]);
         gl::ScopedTextureBind tex2(mDiffTexture);
         gl::drawSolidRect(mLayout.canvases[2]);
     }
@@ -75,10 +72,6 @@ void MiniAreaScanApp::keyUp(KeyEvent event)
     if (code == KeyEvent::KEY_ESCAPE)
     {
         quit();
-    }
-    if (code == KeyEvent::KEY_SPACE)
-    {
-        updateBack();
     }
 }
 

@@ -37,8 +37,6 @@ private:
 
     void sendTuioMessage(osc::SenderUdp &sender, const BlobTracker &blobTracker);
 
-    void updateBack();
-
     float mFps = 0;
 
     struct Layout
@@ -70,7 +68,7 @@ private:
 
     unique_ptr<LidarDevice> mDevice;
 
-    cv::Mat1b mFrontMat, mBackMat, mDiffMat;
-    Channel mFrontSurface, mBackSurface, mDiffSurface;
-    gl::TextureRef mFrontTexture, mBackTexture, mDiffTexture;
+    cv::Mat1b mFrontMat, mDiffMat;
+    Channel mFrontSurface, mDiffSurface;
+    gl::TextureRef mFrontTexture, mDiffTexture;
 };

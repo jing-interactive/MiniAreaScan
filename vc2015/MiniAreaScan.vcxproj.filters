@@ -78,9 +78,6 @@
     <ClCompile Include="..\src\MiniAreaScanApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\Cinder\blocks\Cinder-OpenCV3\include\CinderOpenCV.h">
-      <Filter>Blocks\OpenCV3\include</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\Cinder\blocks\Cinder-VNM\src\AssetManager.cpp">
       <Filter>Blocks\vnm\src</Filter>
     </ClCompile>
@@ -289,6 +286,9 @@
     </ClInclude>
     <ClInclude Include="..\src\MiniAreaScanApp.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Cinder\blocks\Cinder-OpenCV4\include\CinderOpenCV.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

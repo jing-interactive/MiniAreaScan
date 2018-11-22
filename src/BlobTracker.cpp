@@ -11,19 +11,10 @@ using std::vector;
     "" CVAUX_STR(CV_VERSION_MINOR) "" CVAUX_STR(CV_VERSION_REVISION)
 
 #if defined _DEBUG
-#pragma comment(lib, "opencv_core" OPENCV_VERSION "d.lib")
-#pragma comment(lib, "opencv_imgproc" OPENCV_VERSION "d.lib")
-#pragma comment(lib, "opencv_features2d" OPENCV_VERSION "d.lib")
-#pragma comment(lib, "opencv_flann" OPENCV_VERSION "d.lib")
-#pragma comment(lib, "opencv_hal" OPENCV_VERSION "d.lib")
+#pragma comment(lib, "opencv_world" OPENCV_VERSION "d.lib")
 #else
-#pragma comment(lib, "opencv_core" OPENCV_VERSION ".lib")
-#pragma comment(lib, "opencv_imgproc" OPENCV_VERSION ".lib")
-#pragma comment(lib, "opencv_features2d" OPENCV_VERSION ".lib")
-#pragma comment(lib, "opencv_flann" OPENCV_VERSION ".lib")
-#pragma comment(lib, "opencv_hal" OPENCV_VERSION ".lib")
+#pragma comment(lib, "opencv_world" OPENCV_VERSION ".lib")
 #endif
-#pragma comment(lib, "ippicvmt.lib")
 
 using namespace cv;
 
@@ -68,9 +59,9 @@ static PointState getPointState(const Point &pt, int width, int height)
     return NEAR_NOTHING;
 }
 
-void BlobFinder::execute(Mat &img, vector<Blob> &blobs, const BlobFinder::Option &option)
+vector<Blob> BlobFinder::execute(Mat &img, const BlobFinder::Option &option)
 {
-    blobs.clear();
+    vector<Blob> blobs;
     static vector<Vec4i> hierarchy;
     static vector<vector<Point>> contours0;
     static vector<Point> approx;
@@ -93,7 +84,7 @@ void BlobFinder::execute(Mat &img, vector<Blob> &blobs, const BlobFinder::Option
             area = contourArea(approx); //update area
             Moments mom = moments(approx);
 
-            blobs.push_back(Blob());
+            blobs.push_back({});
 
             Blob &obj = blobs[blobs.size() - 1];
             //fill the blob structure
@@ -189,7 +180,10 @@ void BlobFinder::execute(Mat &img, vector<Blob> &blobs, const BlobFinder::Option
         }
     }
 
-    std::sort(blobs.begin(), blobs.end(), option.sort_func);
+    if (!blobs.empty())
+        std::sort(blobs.begin(), blobs.end(), option.sort_func);
+
+    return blobs;
 }
 
 BlobTracker::BlobTracker()

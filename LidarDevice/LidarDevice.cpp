@@ -23,23 +23,23 @@ struct Point2D {
 };
 
 
-struct Blob {
+struct ABlob {
     float min_x, min_y;
     float max_x, max_y;
     vector<Point2D> laserPoints;
 
-    Blob(float minX, float minY, float maxX, float maxY)
+    ABlob(float minX, float minY, float maxX, float maxY)
         : min_x(minX), min_y(minY), max_x(maxX), max_y(maxY)
     {
     }
 
-    Blob(float x, float y)
+    ABlob(float x, float y)
         : min_x(x), min_y(y), max_x(x), max_y(y)
     {
         laserPoints.push_back(Point2D(x, y));
     }
 
-    void expand(const Blob& other)
+    void expand(const ABlob& other)
     {
         if (other.min_x < min_x)
             min_x = other.min_x;
@@ -82,14 +82,14 @@ struct Blob {
     }
 };
 
-static Blob CropArea(-0.75, -0.6, 0.75, 0.6);
+static ABlob CropArea(-0.75, -0.6, 0.75, 0.6);
 
-static float blobContains(const Blob& blob, float x, float y)
+static float blobContains(const ABlob& blob, float x, float y)
 {
     return x >= blob.min_x && x <= blob.max_x && y >= blob.min_y && y <= blob.max_y;
 }
 
-static float blobDistance(const Blob& a, const Blob& b)
+static float blobDistance(const ABlob& a, const ABlob& b)
 {
     if (blobContains(a, b.min_x, b.min_y))
         return 0;
@@ -109,7 +109,7 @@ static float blobDistance(const Blob& a, const Blob& b)
     return sqrtf(x_distance*x_distance + y_distance*y_distance);
 }
 
-static int mergeBlobs(const list<Blob>& input, list<Blob>& output)
+static int mergeBlobs(const list<ABlob>& input, list<ABlob>& output)
 {
     int mergedBlobs = 0;
     output.clear();
@@ -154,9 +154,9 @@ static void physical2screen(float x, float y, int screenWidth, int screenHeight,
     screenY = yp * screenHeight;
 }
 
-static void lookupBlobs(const LidarScan& scan, list<Blob>& blobs)
+static void lookupBlobs(const LidarScan& scan, list<ABlob>& blobs)
 {
-    list<Blob> tmp;
+    list<ABlob> tmp;
 
     for (auto laserPointIter = scan.begin(); laserPointIter != scan.end(); laserPointIter++)
     {
@@ -171,7 +171,7 @@ static void lookupBlobs(const LidarScan& scan, list<Blob>& blobs)
         //if (!blobContains(CropArea, x, y))
             //continue;
 
-        tmp.push_back(Blob(x, y));
+        tmp.push_back(ABlob(x, y));
     }
 
 #if 0
@@ -210,7 +210,7 @@ vector<TouchPointStruct> LidarDevice::getTouchPoints()
 
     if (!scanData.empty())
     {
-        list<Blob> blobs;
+        list<ABlob> blobs;
         lookupBlobs(scanData, blobs);
 
         for (auto blobIter = blobs.begin(); blobIter != blobs.end(); blobIter++)
