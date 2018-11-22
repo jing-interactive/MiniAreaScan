@@ -72,17 +72,15 @@ void MiniAreaScanApp::update()
     mFrontMat.setTo(cv::Scalar(0));
     mDiffMat.setTo(cv::Scalar(0));
     int scanCount = mDevice->scanData.size();
-    vector<cv::Point> points(scanCount);
-    for (int pos = 0; pos < scanCount; pos++) {
-        float distPixel = mDevice->scanData[pos].dist * MM_TO_PIXEL;
-        float rad = (float)((mDevice->scanData[pos].angle - BASE_ANGLE)*3.1415 / 180.0);
-        points[pos].x = sin(rad)*(distPixel)+centerPt.x;
-        points[pos].y = centerPt.y - cos(rad)*(distPixel);
-
-        //int brightness = (_scan_data[pos].quality << 1) + 128;
-        //if (brightness>255) brightness = 255;
-
-        //gl::drawSolidCircle({ points[pos].x, points[pos].y }, 1);
+    vector<cv::Point> points;
+    for (const auto& scanPoint : mDevice->scanData)
+    {
+        if (!scanPoint.valid) continue;
+        float distPixel = scanPoint.dist * MM_TO_PIXEL;
+        float rad = (float)((scanPoint.angle - BASE_ANGLE)*3.1415 / 180.0);
+        int x = sin(rad)*(distPixel)+centerPt.x;
+        int y = centerPt.y - cos(rad)*(distPixel);
+        points.emplace_back(cv::Point( x, y ));
     }
 
     for (auto& pt : points)

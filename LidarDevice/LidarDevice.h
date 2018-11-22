@@ -10,8 +10,6 @@ struct LidarScanPoint
     bool valid;     // if the lidar scan point is valid or not (for eg. no obstacle detected)
 };
 
-typedef std::vector<LidarScanPoint> LidarScan;
-
 struct LidarDevice
 {
     void info_(const std::string &err);
@@ -26,7 +24,7 @@ struct LidarDevice
 
     virtual void update() = 0;
 
-    LidarScan scanData;
+    std::vector<LidarScanPoint> scanData;
 };
 
 
