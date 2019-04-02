@@ -16,12 +16,6 @@
     <Filter Include="Blocks">
       <UniqueIdentifier>{BFDDE0F8-12F5-4F39-860B-8542A3B6EBD8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blocks\OpenCV3">
-      <UniqueIdentifier>{ED23E832-8E43-482C-B571-C840C7B0E628}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blocks\OpenCV3\include">
-      <UniqueIdentifier>{D22CD6F9-866E-4074-91A7-515EAF56D653}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Blocks\vnm">
       <UniqueIdentifier>{307A0E99-C720-4A7B-BD4C-FF15DE10174A}</UniqueIdentifier>
     </Filter>
@@ -63,6 +57,9 @@
     </Filter>
     <Filter Include="Lidar">
       <UniqueIdentifier>{5559fa12-0a1e-42da-8a19-ff41d77b4e5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\OpenCV4">
+      <UniqueIdentifier>{ED23E832-8E43-482C-B571-C840C7B0E628}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -288,7 +285,7 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Cinder\blocks\Cinder-OpenCV4\include\CinderOpenCV.h">
-      <Filter>Header Files</Filter>
+      <Filter>Blocks\OpenCV4</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

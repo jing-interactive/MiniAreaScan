@@ -29,7 +29,7 @@ CYdLidar::CYdLidar()
     m_MaxRange = 16.0;
     m_MinRange = 0.08f;
     m_SampleRate = 9;
-    m_ScanFrequency = 7;
+    m_ScanFrequency = 12; // <--- fps
     isScanning = false;
     node_counts = 720;
     each_angle = 0.5;
